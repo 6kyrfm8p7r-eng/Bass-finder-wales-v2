@@ -1,0 +1,11 @@
+{
+  "name": "Bass Finder Wales",
+  "short_name": "Bass Finder",
+  "description": "Live bass fishing conditions, mark rankings, tide windows and safety intelligence for Wales.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#071014",
+  "theme_color": "#071014",
+  "orientation": "portrait",
+  "icons": []
+}
