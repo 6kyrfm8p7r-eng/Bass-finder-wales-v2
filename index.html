@@ -1,0 +1,3906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071014">
+<meta name="description" content="Bass Finder Wales — live bass fishing conditions, mark rankings, tide windows and safety intelligence.">
+<link rel="manifest" href="./manifest.webmanifest">
+
+<title>Bass Finder Wales</title>
+
+<style>
+:root{
+  --bg:#071014;
+  --panel:#0c171c;
+  --panel2:#101e24;
+  --line:#1c3038;
+  --text:#edf7f8;
+  --muted:#8ea5ab;
+  --cyan:#43d9e8;
+  --green:#57d68a;
+  --yellow:#f4cf58;
+  --orange:#f39b4a;
+  --red:#ef6262;
+  --blue:#5da9ff;
+  --shadow:0 12px 35px rgba(0,0,0,.25);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 20% -10%,rgba(67,217,232,.10),transparent 32%),
+    linear-gradient(180deg,#071014 0%,#081317 100%);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  min-height:100vh;
+}
+
+button,input,select,textarea{font:inherit}
+
+button{
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.app{
+  max-width:1100px;
+  margin:auto;
+  padding:16px;
+}
+
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.logo{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  background:#0e252b;
+  border:1px solid #23454d;
+  padding:7px;
+}
+
+.brand h1{
+  font-size:19px;
+  margin:0;
+  letter-spacing:-.3px;
+}
+
+.brand p{
+  margin:2px 0 0;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.refresh{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--cyan);
+  font-size:19px;
+}
+
+.refresh:active{transform:scale(.96)}
+
+.status{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:var(--muted);
+  font-size:11px;
+  margin:0 2px 13px;
+}
+
+.dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 9px rgba(87,214,138,.7);
+}
+
+.hero{
+  background:
+    linear-gradient(145deg,rgba(19,44,51,.96),rgba(9,22,27,.98));
+  border:1px solid #24434b;
+  border-radius:24px;
+  padding:20px;
+  box-shadow:var(--shadow);
+  margin-bottom:14px;
+}
+
+.hero-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.eyebrow{
+  font-size:10px;
+  font-weight:800;
+  color:var(--cyan);
+  letter-spacing:1.2px;
+}
+
+.live-pill{
+  border:1px solid #28535b;
+  background:#0b2026;
+  color:#8fe8ef;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:9px;
+  font-weight:800;
+}
+
+.hero h2{
+  font-size:29px;
+  margin:8px 0 2px;
+  letter-spacing:-1px;
+}
+
+.hero-location{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:140px 1fr;
+  gap:18px;
+  align-items:center;
+  margin-top:18px;
+}
+
+.score-ring{
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  position:relative;
+  background:conic-gradient(var(--cyan) 0deg,var(--cyan) 0deg,#183139 0deg);
+}
+
+.score-ring:before{
+  content:"";
+  position:absolute;
+  inset:9px;
+  background:#09161b;
+  border-radius:50%;
+}
+
+.score-inner{
+  position:relative;
+  text-align:center;
+}
+
+.score-number{
+  font-size:39px;
+  font-weight:850;
+  line-height:1;
+}
+
+.score-label{
+  color:var(--muted);
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+.hero-copy{
+  display:grid;
+  gap:10px;
+}
+
+.window{
+  background:rgba(4,12,15,.45);
+  border:1px solid #1d3940;
+  border-radius:14px;
+  padding:11px 12px;
+}
+
+.window-label{
+  color:var(--muted);
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.9px;
+}
+
+.window strong{
+  display:block;
+  margin-top:4px;
+  font-size:16px;
+}
+
+.window small{
+  color:var(--muted);
+  display:block;
+  margin-top:3px;
+  font-size:10px;
+}
+
+.safety{
+  border-radius:18px;
+  padding:14px;
+  margin-top:15px;
+  border:1px solid;
+}
+
+.safety.safe{
+  background:rgba(87,214,138,.07);
+  border-color:rgba(87,214,138,.28);
+}
+
+.safety.caution{
+  background:rgba(244,207,88,.07);
+  border-color:rgba(244,207,88,.3);
+}
+
+.safety.high{
+  background:rgba(243,155,74,.07);
+  border-color:rgba(243,155,74,.3);
+}
+
+.safety.danger{
+  background:rgba(239,98,98,.08);
+  border-color:rgba(239,98,98,.38);
+}
+
+.safety-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.safety-title{
+  font-size:13px;
+  font-weight:850;
+}
+
+.safety-status{
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.7px;
+}
+
+.safety p{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.45;
+}
+
+.section{
+  margin:20px 0;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.section h3{
+  margin:0;
+  font-size:16px;
+}
+
+.section-sub{
+  color:var(--muted);
+  font-size:10px;
+}
+
+.timeline{
+  display:grid;
+  grid-template-columns:repeat(12,minmax(65px,1fr));
+  gap:5px;
+  overflow-x:auto;
+  padding-bottom:3px;
+}
+
+.hour{
+  min-width:65px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:8px 5px;
+  text-align:center;
+}
+
+.hour-time{
+  color:var(--muted);
+  font-size:9px;
+}
+
+.hour-score{
+  font-size:16px;
+  font-weight:800;
+  margin:4px 0;
+}
+
+.hour-tide{
+  font-size:8px;
+  color:var(--cyan);
+}
+
+.hour.safe{border-bottom:2px solid var(--green)}
+.hour.caution{border-bottom:2px solid var(--yellow)}
+.hour.high{border-bottom:2px solid var(--orange)}
+.hour.danger{border-bottom:2px solid var(--red)}
+
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+
+.metric{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  min-width:0;
+}
+
+.metric-label{
+  color:var(--muted);
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+}
+
+.metric-value{
+  font-size:17px;
+  font-weight:800;
+  margin-top:5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.metric-note{
+  color:var(--muted);
+  font-size:9px;
+  margin-top:3px;
+}
+
+.rank-list{
+  display:grid;
+  gap:8px;
+}
+
+.rank-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:13px;
+  display:grid;
+  grid-template-columns:36px 1fr auto;
+  gap:10px;
+  align-items:center;
+  transition:.15s;
+}
+
+.rank-card:active{
+  transform:scale(.985);
+  background:var(--panel2);
+}
+
+.rank-no{
+  width:32px;
+  height:32px;
+  border-radius:10px;
+  background:#13242a;
+  display:grid;
+  place-items:center;
+  font-weight:850;
+  color:var(--muted);
+}
+
+.rank-name{
+  font-weight:800;
+  font-size:13px;
+}
+
+.rank-info{
+  color:var(--muted);
+  font-size:9px;
+  margin-top:4px;
+}
+
+.rank-score{
+  font-size:20px;
+  font-weight:850;
+  text-align:right;
+}
+
+.rank-safety{
+  font-size:8px;
+  text-align:right;
+  margin-top:3px;
+  font-weight:800;
+}
+
+.green{color:var(--green)}
+.yellow{color:var(--yellow)}
+.orange{color:var(--orange)}
+.red{color:var(--red)}
+.cyan{color:var(--cyan)}
+
+.tabs{
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  padding-bottom:2px;
+}
+
+.tab{
+  flex:0 0 auto;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--muted);
+  padding:8px 13px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:750;
+}
+
+.tab.active{
+  color:#071014;
+  background:var(--cyan);
+  border-color:var(--cyan);
+}
+
+.search{
+  width:100%;
+  margin:9px 0;
+  border:1px solid var(--line);
+  background:#09161a;
+  color:var(--text);
+  border-radius:13px;
+  padding:11px 13px;
+  outline:none;
+  font-size:12px;
+}
+
+.search:focus{border-color:#32626b}
+
+.all-marks{
+  display:grid;
+  gap:7px;
+}
+
+.mark-row{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.mark-row:active{background:var(--panel2)}
+
+.mark-main{
+  min-width:0;
+}
+
+.mark-main strong{
+  font-size:12px;
+}
+
+.mark-main span{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+  margin-top:3px;
+}
+
+.mark-right{
+  text-align:right;
+  flex:0 0 auto;
+}
+
+.mark-right strong{
+  font-size:18px;
+}
+
+.mark-right small{
+  display:block;
+  font-size:8px;
+  color:var(--muted);
+}
+
+/* =========================================================
+   BASS ACTIVITY
+   ========================================================= */
+
+.activity-card{
+  background:
+    linear-gradient(145deg,rgba(13,31,37,.96),rgba(8,20,24,.98));
+  border:1px solid #23434b;
+  border-radius:18px;
+  padding:15px;
+}
+
+.activity-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.activity-title{
+  font-size:13px;
+  font-weight:850;
+}
+
+.activity-score{
+  font-size:25px;
+  font-weight:900;
+}
+
+.activity-label{
+  color:var(--cyan);
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.7px;
+}
+
+.activity-bar{
+  height:7px;
+  background:#16272d;
+  border-radius:999px;
+  overflow:hidden;
+  margin:12px 0;
+}
+
+.activity-fill{
+  height:100%;
+  border-radius:999px;
+  background:var(--cyan);
+  transition:.3s;
+}
+
+.activity-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+}
+
+.activity-stat{
+  background:#0b191e;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:9px;
+  text-align:center;
+}
+
+.activity-stat strong{
+  display:block;
+  font-size:15px;
+}
+
+.activity-stat span{
+  display:block;
+  color:var(--muted);
+  font-size:8px;
+  margin-top:3px;
+  text-transform:uppercase;
+}
+
+.activity-note{
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.45;
+  margin-top:10px;
+}
+
+/* =========================================================
+   REPORTING
+   ========================================================= */
+
+.report-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.report-button{
+  border:1px solid;
+  border-radius:15px;
+  padding:13px 10px;
+  font-weight:850;
+  font-size:11px;
+  transition:.15s;
+}
+
+.report-button:active{
+  transform:scale(.97);
+}
+
+.report-catch{
+  background:rgba(87,214,138,.08);
+  border-color:rgba(87,214,138,.3);
+  color:var(--green);
+}
+
+.report-blank{
+  background:rgba(93,169,255,.07);
+  border-color:rgba(93,169,255,.25);
+  color:var(--blue);
+}
+
+.form-group{
+  margin-bottom:12px;
+}
+
+.form-label{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+  margin-bottom:5px;
+}
+
+.form-input,
+.form-select,
+.form-textarea{
+  width:100%;
+  border:1px solid var(--line);
+  background:#09161a;
+  color:var(--text);
+  border-radius:12px;
+  padding:11px 12px;
+  outline:none;
+  font-size:12px;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus{
+  border-color:#32626b;
+}
+
+.form-select{
+  appearance:auto;
+}
+
+.form-textarea{
+  min-height:80px;
+  resize:vertical;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.submit-button{
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:13px;
+  background:var(--cyan);
+  color:#071014;
+  font-size:12px;
+  font-weight:900;
+  margin-top:4px;
+}
+
+.cancel-button{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:11px;
+  background:#101f24;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:7px;
+}
+
+.form-help{
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.45;
+  margin:0 0 13px;
+}
+
+.reports{
+  display:grid;
+  gap:8px;
+}
+
+.report{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+}
+
+.report-head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.report strong{
+  font-size:11px;
+}
+
+.report-date{
+  color:var(--muted);
+  font-size:9px;
+}
+
+.report p{
+  margin:7px 0 0;
+  color:#b8c9cd;
+  font-size:10px;
+  line-height:1.45;
+}
+
+.info{
+  background:#0a181d;
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:13px;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.55;
+}
+
+.info strong{color:var(--text)}
+
+footer{
+  padding:10px 3px 30px;
+  color:#64797e;
+  font-size:9px;
+  line-height:1.5;
+}
+
+.hidden{display:none!important}
+
+.drawer{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.68);
+  z-index:20;
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+}
+
+.drawer-panel{
+  width:100%;
+  max-width:850px;
+  max-height:94vh;
+  overflow:auto;
+  background:#071014;
+  border:1px solid #23424a;
+  border-bottom:0;
+  border-radius:24px 24px 0 0;
+  padding:16px;
+  box-shadow:0 -20px 60px rgba(0,0,0,.45);
+}
+
+.drawer-close{
+  width:100%;
+  border:0;
+  background:#132329;
+  color:var(--muted);
+  border-radius:12px;
+  padding:10px;
+  margin-bottom:14px;
+  font-size:11px;
+}
+
+.drawer-title{
+  font-size:25px;
+  margin:0;
+}
+
+.drawer-location{
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+}
+
+.reason-list{
+  display:grid;
+  gap:6px;
+  margin-top:10px;
+}
+
+.reason{
+  padding:9px 10px;
+  border-radius:10px;
+  background:#0d1b20;
+  color:#a9bec3;
+  font-size:10px;
+}
+
+.loading{
+  text-align:center;
+  padding:50px 20px;
+  color:var(--muted);
+}
+
+.error{
+  background:rgba(239,98,98,.08);
+  border:1px solid rgba(239,98,98,.3);
+  color:#ff9c9c;
+  padding:13px;
+  border-radius:13px;
+  font-size:11px;
+}
+
+@media(max-width:700px){
+  .hero-grid{
+    grid-template-columns:120px 1fr;
+    gap:13px
+  }
+
+  .score-ring{
+    width:112px;
+    height:112px
+  }
+
+  .score-number{
+    font-size:33px
+  }
+
+  .metrics{
+    grid-template-columns:repeat(2,1fr)
+  }
+}
+
+@media(min-width:800px){
+  .drawer{
+    align-items:center
+  }
+
+  .drawer-panel{
+    border:1px solid #23424a;
+    border-radius:24px;
+    max-height:90vh
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="brand">
+    <img class="logo" src="./icon.svg" alt="">
+    <div>
+      <h1>Bass Finder Wales</h1>
+      <p>Live conditions • tide windows • safety intelligence</p>
+    </div>
+  </div>
+
+  <button class="refresh" onclick="loadApp()" aria-label="Refresh">↻</button>
+</header>
+
+<div class="status">
+  <span class="dot"></span>
+  <span id="statusText">Loading live coastal conditions…</span>
+</div>
+
+<div id="appContent">
+  <div class="loading">Checking the coast…</div>
+</div>
+
+<footer>
+  <strong>Bass Finder Wales</strong> is decision-support software, not a navigation or safety system.
+  Forecasts can be wrong and coastal conditions can change rapidly. Always assess the sea yourself
+  and follow local access restrictions, tide information, Met Office/RNLI guidance and common-sense
+  safety procedures. A high fishing score never overrides a dangerous safety assessment.
+</footer>
+
+</div>
+
+<div id="drawer" class="drawer hidden" onclick="closeDrawer(event)">
+  <div class="drawer-panel" onclick="event.stopPropagation()">
+    <button class="drawer-close" onclick="closeMark()">← BACK TO MARKS</button>
+    <div id="drawerContent"></div>
+  </div>
+</div>
+
+<!-- =========================================================
+     BASS ACTIVITY ENGINE
+     ========================================================= -->
+
+<script src="./bass-activity.js"></script>
+
+<script>
+/* ============================================================
+   BASS FINDER WALES V2.2
+   Live conditions + Bass Activity reporting
+   ============================================================ */
+
+const MARKS = [
+
+/* VALE OF GLAMORGAN */
+{
+ name:"Monknash",
+ lat:51.4250, lon:-3.5500,
+ type:"low",
+ tide:"ebb",
+ exposure:"exposed",
+ swellMin:.3,swellMax:1.4,
+ periodMin:5,periodMax:11,
+ windMin:170,windMax:270,
+ note:"Low-water sand and rock with bass potential.",
+ reason:"Best around low water and moving water across the mixed sand/rock ground."
+},
+{
+ name:"Nash Point",
+ lat:51.4048, lon:-3.5580,
+ type:"low",
+ tide:"ebb",
+ exposure:"very exposed",
+ swellMin:.3,swellMax:1.3,
+ periodMin:5,periodMax:11,
+ windMin:160,windMax:250,
+ note:"Exposed ledges and reef.",
+ reason:"A moving-water rock mark where swell and wind direction are critical."
+},
+{
+ name:"St Donats",
+ lat:51.4015, lon:-3.4630,
+ type:"low",
+ tide:"ebb",
+ exposure:"exposed",
+ swellMin:.2,swellMax:1.2,
+ periodMin:5,periodMax:10,
+ windMin:160,windMax:260,
+ note:"Rocky ground and tidal movement.",
+ reason:"Structure and current can concentrate bass on the ebb."
+},
+{
+ name:"Llantwit Major",
+ lat:51.3970, lon:-3.4970,
+ type:"low",
+ tide:"ebb",
+ exposure:"exposed",
+ swellMin:.3,swellMax:1.3,
+ periodMin:5,periodMax:11,
+ windMin:160,windMax:260,
+ note:"Mixed beach and rock ground.",
+ reason:"Useful low-water option when colour and tidal movement are present."
+},
+{
+ name:"Aberthaw",
+ lat:51.3875, lon:-3.4050,
+ type:"low",
+ tide:"ebb",
+ exposure:"exposed",
+ swellMin:.4,swellMax:1.4,
+ periodMin:5,periodMax:11,
+ windMin:160,windMax:250,
+ note:"Strong tidal movement and mixed ground.",
+ reason:"The ebb and coloured water can create a useful bass window."
+},
+{
+ name:"Dunraven Bay",
+ lat:51.4440, lon:-3.6050,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.3,swellMax:1.3,
+ periodMin:5,periodMax:11,
+ windMin:210,windMax:300,
+ note:"Beach, rock and cliff structure.",
+ reason:"Flooding water pushes bait into the bay and around structure."
+},
+{
+ name:"Southerndown",
+ lat:51.4470, lon:-3.6140,
+ type:"low",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.3,swellMax:1.3,
+ periodMin:5,periodMax:11,
+ windMin:210,windMax:300,
+ note:"Rock and sand transition.",
+ reason:"Mixed ground can hold bass as the tide covers the structure."
+},
+{
+ name:"Ogmore",
+ lat:51.4780, lon:-3.6100,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.2,swellMax:1.0,
+ periodMin:4,periodMax:9,
+ windMin:200,windMax:290,
+ note:"River mouth and surf.",
+ reason:"Freshwater and tidal flow create a natural bait concentration."
+},
+
+/* PORTHCAWL / BRIDGEND */
+{
+ name:"Sker Point",
+ lat:51.4970, lon:-3.7050,
+ type:"high",
+ tide:"flood",
+ exposure:"exposed",
+ swellMin:.3,swellMax:1.1,
+ periodMin:5,periodMax:10,
+ windMin:230,windMax:310,
+ note:"Mixed reef, gullies and surf.",
+ reason:"Gullies and sand/rock seams become increasingly fishable as water floods."
+},
+{
+ name:"Sker Rocks",
+ lat:51.5000, lon:-3.7350,
+ type:"low",
+ tide:"ebb",
+ exposure:"very exposed",
+ swellMin:.2,swellMax:1.0,
+ periodMin:5,periodMax:10,
+ windMin:230,windMax:310,
+ note:"Low-water reef and deeper gullies.",
+ reason:"A classic low-water bass/lure mark where swell must be carefully controlled."
+},
+{
+ name:"Rest Bay",
+ lat:51.4930, lon:-3.7000,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.3,swellMax:1.2,
+ periodMin:5,periodMax:10,
+ windMin:230,windMax:310,
+ note:"Surf beach with rocky edges.",
+ reason:"A rising tide can push bait into the surf and shoreward structure."
+},
+{
+ name:"Newton Point",
+ lat:51.4860, lon:-3.6820,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.2,swellMax:1.0,
+ periodMin:4,periodMax:9,
+ windMin:230,windMax:310,
+ note:"Point with mixed sand and rock.",
+ reason:"Current sweeps around the point and creates feeding lanes."
+},
+{
+ name:"Porthcawl Harbour",
+ lat:51.4780, lon:-3.7040,
+ type:"high",
+ tide:"flood",
+ exposure:"sheltered",
+ swellMin:.1,swellMax:.7,
+ periodMin:3,periodMax:8,
+ windMin:210,windMax:310,
+ note:"Sheltered harbour and tidal water.",
+ reason:"Useful backup when exposed marks are blown out."
+},
+{
+ name:"Aberavon",
+ lat:51.5290, lon:-3.7600,
+ type:"high",
+ tide:"flood",
+ exposure:"exposed",
+ swellMin:.3,swellMax:1.3,
+ periodMin:5,periodMax:11,
+ windMin:220,windMax:310,
+ note:"Long surf beach near Port Talbot.",
+ reason:"Surf and a flooding tide can bring bass tight to the beach."
+},
+{
+ name:"Neath River Mouth",
+ lat:51.5290, lon:-3.7980,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.2,swellMax:1.0,
+ periodMin:4,periodMax:9,
+ windMin:220,windMax:310,
+ note:"Estuary mouth and tidal current.",
+ reason:"River flow, tidal movement and baitfish can make the mouth highly interesting."
+},
+
+/* SWANSEA */
+{
+ name:"Swansea West Pier",
+ lat:51.5670, lon:-3.9850,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.2,swellMax:1.0,
+ periodMin:4,periodMax:9,
+ windMin:210,windMax:300,
+ note:"Pier and tidal channel.",
+ reason:"A known South Wales fishing mark with strong tidal movement."
+},
+{
+ name:"Mumbles",
+ lat:51.5700, lon:-3.9900,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.2,swellMax:1.0,
+ periodMin:4,periodMax:9,
+ windMin:200,windMax:300,
+ note:"Rocky shoreline and tidal flow.",
+ reason:"Current around the headland can create feeding lanes."
+},
+{
+ name:"Bracelet Bay",
+ lat:51.5680, lon:-3.9960,
+ type:"low",
+ tide:"ebb",
+ exposure:"mixed",
+ swellMin:.2,swellMax:1.0,
+ periodMin:4,periodMax:9,
+ windMin:200,windMax:300,
+ note:"Rock and small bay.",
+ reason:"Useful on the ebb when water drains around the rock features."
+},
+{
+ name:"Langland Bay",
+ lat:51.5680, lon:-4.0120,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.2,swellMax:1.0,
+ periodMin:4,periodMax:9,
+ windMin:210,windMax:300,
+ note:"Rocky edges and sandy bay.",
+ reason:"Flood tide covers structure and brings bait close to shore."
+},
+{
+ name:"Caswell Bay",
+ lat:51.5660, lon:-4.0850,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.2,swellMax:1.0,
+ periodMin:4,periodMax:9,
+ windMin:210,windMax:300,
+ note:"Surf beach with rock features.",
+ reason:"Bass can use the surf and rocky edges as the tide rises."
+},
+{
+ name:"Brandy Cove",
+ lat:51.5601, lon:-4.1855,
+ type:"low",
+ tide:"ebb",
+ exposure:"mixed",
+ swellMin:.2,swellMax:1.0,
+ periodMin:4,periodMax:9,
+ windMin:210,windMax:300,
+ note:"Rocky low-water bass mark.",
+ reason:"Low water exposes gullies and rock structure where lure fishing can be productive."
+},
+{
+ name:"Pobbles Bay",
+ lat:51.5530, lon:-4.1250,
+ type:"low",
+ tide:"ebb",
+ exposure:"exposed",
+ swellMin:.2,swellMax:1.1,
+ periodMin:5,periodMax:10,
+ windMin:220,windMax:310,
+ note:"Deep gutters and strong tidal rips.",
+ reason:"The river/sea meeting point and eastern rock features can concentrate fish."
+},
+{
+ name:"Three Cliffs Bay",
+ lat:51.5760, lon:-4.1050,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.3,swellMax:1.2,
+ periodMin:5,periodMax:10,
+ windMin:190,windMax:280,
+ note:"River, cliffs and sand.",
+ reason:"Flooding water works through the channels and around the river mouth."
+},
+{
+ name:"Oxwich Bay",
+ lat:51.5527, lon:-4.1692,
+ type:"high",
+ tide:"flood",
+ exposure:"sheltered",
+ swellMin:.1,swellMax:.8,
+ periodMin:4,periodMax:9,
+ windMin:180,windMax:280,
+ note:"Sheltered sandy bay.",
+ reason:"A useful calmer-water option with bass potential on the flood."
+},
+{
+ name:"Port Eynon",
+ lat:51.5390, lon:-4.2100,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.2,swellMax:1.0,
+ periodMin:4,periodMax:10,
+ windMin:220,windMax:310,
+ note:"Beach with rocky edges.",
+ reason:"Flood tide and surf can push bait into the bay."
+},
+{
+ name:"Mewslade Bay",
+ lat:51.5600, lon:-4.2650,
+ type:"low",
+ tide:"ebb",
+ exposure:"exposed",
+ swellMin:.3,swellMax:1.3,
+ periodMin:5,periodMax:11,
+ windMin:230,windMax:320,
+ note:"West-facing mixed bay.",
+ reason:"Low-light, coloured-water conditions can create a quality bass window."
+},
+{
+ name:"Llangennith",
+ lat:51.5820, lon:-4.2950,
+ type:"high",
+ tide:"flood",
+ exposure:"very exposed",
+ swellMin:.4,swellMax:1.5,
+ periodMin:6,periodMax:12,
+ windMin:230,windMax:320,
+ note:"Classic surf beach.",
+ reason:"Bass can move into the surf as the flood builds."
+},
+{
+ name:"Rhossili",
+ lat:51.5668, lon:-4.2870,
+ type:"low",
+ tide:"ebb",
+ exposure:"very exposed",
+ swellMin:.5,swellMax:1.6,
+ periodMin:6,periodMax:12,
+ windMin:210,windMax:300,
+ note:"Highly exposed open coast.",
+ reason:"Can be excellent with manageable swell, but safety can deteriorate quickly."
+},
+{
+ name:"Broughton Bay",
+ lat:51.6000, lon:-4.3150,
+ type:"low",
+ tide:"ebb",
+ exposure:"exposed",
+ swellMin:.3,swellMax:1.3,
+ periodMin:5,periodMax:11,
+ windMin:230,windMax:320,
+ note:"Rocky/sandy western Gower mark.",
+ reason:"Moving water around structure can bring bass close."
+},
+{
+ name:"Whiteford Sands",
+ lat:51.6070, lon:-4.2700,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.2,swellMax:1.0,
+ periodMin:4,periodMax:9,
+ windMin:240,windMax:320,
+ note:"Long sandy and estuarine edge.",
+ reason:"Flood tide can move bait through the shallow channels."
+},
+
+/* LLANELLI / CARMARTHEN BAY */
+{
+ name:"Cefn Sidan",
+ lat:51.6900, lon:-4.3500,
+ type:"high",
+ tide:"flood",
+ exposure:"exposed",
+ swellMin:.3,swellMax:1.3,
+ periodMin:5,periodMax:11,
+ windMin:230,windMax:320,
+ note:"Huge surf beach.",
+ reason:"Bass can patrol the surf zone on a rising tide."
+},
+{
+ name:"Burry Port North Channel",
+ lat:51.6840, lon:-4.2500,
+ type:"high",
+ tide:"flood",
+ exposure:"sheltered",
+ swellMin:.1,swellMax:.8,
+ periodMin:3,periodMax:8,
+ windMin:220,windMax:310,
+ note:"Tidal channel and harbour edge.",
+ reason:"Tidal flow and bait movement make this a useful estuary-style option."
+},
+{
+ name:"Burry Port",
+ lat:51.6830, lon:-4.2550,
+ type:"high",
+ tide:"flood",
+ exposure:"sheltered",
+ swellMin:.1,swellMax:.7,
+ periodMin:3,periodMax:8,
+ windMin:220,windMax:310,
+ note:"Harbour and tidal margins.",
+ reason:"A calmer backup option when the open coast is unfishable."
+},
+{
+ name:"Pendine",
+ lat:51.7440, lon:-4.5520,
+ type:"high",
+ tide:"flood",
+ exposure:"exposed",
+ swellMin:.3,swellMax:1.3,
+ periodMin:5,periodMax:11,
+ windMin:230,windMax:320,
+ note:"Open Carmarthen Bay surf.",
+ reason:"Surf and flood tide provide classic bass conditions."
+},
+
+/* PEMBROKESHIRE */
+{
+ name:"Freshwater East",
+ lat:51.6230, lon:-4.8720,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.2,swellMax:1.2,
+ periodMin:5,periodMax:11,
+ windMin:190,windMax:280,
+ note:"Rocky bay and sand.",
+ reason:"Flooding water works across the mixed ground and beach."
+},
+{
+ name:"Manorbier Bay",
+ lat:51.6420, lon:-4.7620,
+ type:"high",
+ tide:"flood",
+ exposure:"exposed",
+ swellMin:.2,swellMax:1.2,
+ periodMin:5,periodMax:11,
+ windMin:190,windMax:290,
+ note:"Open bay with rocky edges.",
+ reason:"Bass can use the surf and rocky margins as the tide rises."
+},
+{
+ name:"Manorbier Castle Beach",
+ lat:51.6400, lon:-4.7600,
+ type:"low",
+ tide:"ebb",
+ exposure:"exposed",
+ swellMin:.2,swellMax:1.1,
+ periodMin:5,periodMax:10,
+ windMin:190,windMax:290,
+ note:"Rock and sand transition.",
+ reason:"Ebbing water drains across structure and channels."
+},
+{
+ name:"Saundersfoot Beach",
+ lat:51.7080, lon:-4.7000,
+ type:"high",
+ tide:"flood",
+ exposure:"mixed",
+ swellMin:.1,swellMax:.9,
+ periodMin:4,periodMax:9,
+ windMin:190,windMax:290,
+ note:"Sheltered bay with rock edges.",
+ reason:"A useful more protected option when exposed marks are uncomfortable."
+},
+{
+ name:"Saundersfoot Harbour",
+ lat:51.7090, lon:-4.7020,
+ type:"high",
+ tide:"flood",
+ exposure:"sheltered",
+ swellMin:.1,swellMax:.6,
+ periodMin:3,periodMax:8,
+ windMin:180,windMax:300,
+ note:"Sheltered harbour water.",
+ reason:"Useful fallback with tidal flow and structure."
+},
+{
+ name:"Broad Haven South",
+ lat:51.6390, lon:-4.9370,
+ type:"high",
+ tide:"flood",
+ exposure:"exposed",
+ swellMin:.3,swellMax:1.4,
+ periodMin:5,periodMax:12,
+ windMin:200,windMax:310,
+ note:"Open surf beach.",
+ reason:"Surf and rising water can bring bass into the shallows."
+},
+{
+ name:"Druidston Haven",
+ lat:51.6620, lon:-5.0500,
+ type:"high",
+ tide:"flood",
+ exposure:"exposed",
+ swellMin:.3,swellMax:1.4,
+ periodMin:5,periodMax:12,
+ windMin:210,windMax:320,
+ note:"Remote surf and rock.",
+ reason:"Open-coast bass conditions can be strong when swell remains manageable."
+},
+{
+ name:"Angle Bay",
+ lat:51.6840, lon:-5.0830,
+ type:"high",
+ tide:"flood",
+ exposure:"sheltered",
+ swellMin:.1,swellMax:.8,
+ periodMin:3,periodMax:9,
+ windMin:180,windMax:290,
+ note:"Sheltered Milford Haven water.",
+ reason:"Useful bad-weather alternative with strong tidal movement."
+},
+{
+ name:"Pembroke River",
+ lat:51.6740, lon:-4.9160,
+ type:"high",
+ tide:"flood",
+ exposure:"sheltered",
+ swellMin:.05,swellMax:.6,
+ periodMin:2,periodMax:7,
+ windMin:150,windMax:320,
+ note:"Sheltered tidal estuary.",
+ reason:"A backup option when open coast conditions become poor."
+},
+{
+ name:"Freshwater West",
+ lat:51.6480, lon:-5.0600,
+ type:"low",
+ tide:"ebb",
+ exposure:"very exposed",
+ swellMin:.5,swellMax:1.8,
+ periodMin:7,periodMax:13,
+ windMin:210,windMax:300,
+ note:"Highly exposed surf and reef.",
+ reason:"Potentially excellent bass water, but one of the marks where safety must dominate."
+}
+
+];
+
+const REPORTS = [
+ {mark:"Sker Rocks",date:"Local sample",text:"Known South Wales low-water bass/lure venue. Treat as exposed and highly condition dependent."},
+ {mark:"Monknash",date:"Local sample",text:"Established bass mark with mixed sand and rock. Low-water timing is particularly important."},
+ {mark:"Swansea West Pier",date:"Local sample",text:"Known South Wales fishing mark with strong tidal movement."},
+ {mark:"Brandy Cove",date:"Local sample",text:"Low-water Gower option with rocky structure and bass potential."},
+ {mark:"Burry Port North Channel",date:"Local sample",text:"Tidal-channel option worth considering when exposed coast conditions deteriorate."}
+];
+
+let results=[];
+let currentMark=null;
+let currentFilter="all";
+
+function clamp(v,min,max){
+  return Math.max(min,Math.min(max,v));
+}
+
+function average(a){
+  if(!a.length)return 0;
+  return a.reduce((x,y)=>x+y,0)/a.length;
+}
+
+function directionDifference(a,b){
+  let d=Math.abs(a-b)%360;
+  return d>180?360-d:d;
+}
+
+function inSector(dir,min,max){
+  if(min<=max)return dir>=min&&dir<=max;
+  return dir>=min||dir<=max;
+}
+
+function fmtHour(iso){
+  const d=new Date(iso);
+  return d.toLocaleTimeString([],{
+    hour:"2-digit",
+    minute:"2-digit",
+    hour12:false
+  });
+}
+
+function fmtDateTime(iso){
+  const d=new Date(iso);
+  return d.toLocaleString([],{
+    weekday:"short",
+    hour:"2-digit",
+    minute:"2-digit",
+    hour12:false
+  });
+}
+
+function scoreClass(score){
+  if(score>=80)return "green";
+  if(score>=65)return "cyan";
+  if(score>=50)return "yellow";
+  if(score>=35)return "orange";
+  return "red";
+}
+
+function safetyClass(status){
+  if(status==="SAFE / NORMAL")return "safe";
+  if(status==="CAUTION")return "caution";
+  if(status==="HIGH RISK")return "high";
+  return "danger";
+}
+
+function safetyLabel(status){
+  if(status==="SAFE / NORMAL")return "🟢 SAFE";
+  if(status==="CAUTION")return "🟡 CAUTION";
+  if(status==="HIGH RISK")return "🟠 HIGH RISK";
+  return "🔴 DANGEROUS";
+}
+
+function tideLabel(slope){
+  if(slope>0.006)return "Flooding";
+  if(slope<-0.006)return "Ebbing";
+  return "Slack";
+}
+
+function tideScore(slope,target){
+  const actual=tideLabel(slope);
+  if(actual==="Slack")return target==="slack"?90:48;
+  if(actual.toLowerCase().startsWith(target))return 94;
+  return 42;
+}
+
+function nearestIndex(times,target){
+  let best=0;
+  let dist=Infinity;
+
+  for(let i=0;i<times.length;i++){
+    const d=Math.abs(new Date(times[i])-target);
+
+    if(d<dist){
+      dist=d;
+      best=i;
+    }
+  }
+
+  return best;
+}
+
+/* =========================================================
+   BASS ACTIVITY INTEGRATION
+   ========================================================= */
+
+function getMarkActivity(markName){
+
+  if(
+    typeof getBassActivitySummary!=="function"
+  ){
+    return {
+      score:50,
+      signal:0,
+      confidence:0,
+      catches:0,
+      blanks:0,
+      reports:0,
+      label:"NO DATA"
+    };
+  }
+
+  return getBassActivitySummary(markName);
+}
+
+function applyBassActivity(baseScore,activity){
+
+  /*
+     Bass Activity deliberately has a restrained influence.
+
+     With little evidence:
+       maximum effect is tiny.
+
+     As evidence builds:
+       influence becomes stronger.
+
+     This prevents a single catch from suddenly making
+     a mark look like a guaranteed winner.
+  */
+
+  const confidence=activity.confidence||0;
+
+  if(!activity.reports){
+    return baseScore;
+  }
+
+  const maximumAdjustment =
+    Math.min(
+      15,
+      Math.round(confidence/7)
+    );
+
+  const adjustment=clamp(
+    activity.signal,
+    -maximumAdjustment,
+    maximumAdjustment
+  );
+
+  return clamp(
+    Math.round(baseScore+adjustment),
+    0,
+    100
+  );
+}
+
+/* =========================================================
+   FORECAST EVALUATION
+   ========================================================= */
+
+function evaluateHour(mark,data,i){
+
+  const wave=data.wave_height?.[i]??0;
+  const wavePeriod=data.wave_period?.[i]??6;
+  const swell=data.swell_wave_height?.[i]??0;
+  const swellPeriod=data.swell_wave_period?.[i]??6;
+
+  const wind=data.wind_speed_10m?.[i]??0;
+  const gust=data.wind_gusts_10m?.[i]??wind;
+  const windDir=data.wind_direction_10m?.[i]??0;
+
+  const rain=data.precipitation_probability?.[i]??0;
+  const cloud=data.cloud_cover?.[i]??50;
+  const temp=data.temperature_2m?.[i]??15;
+  const seaTemp=data.sea_surface_temperature?.[i]??13;
+
+  const seaLevel=data.sea_level_height_msl||[];
+
+  const prev=
+    seaLevel[Math.max(0,i-1)]
+    ??
+    seaLevel[i]
+    ??
+    0;
+
+  const next=
+    seaLevel[Math.min(seaLevel.length-1,i+1)]
+    ??
+    seaLevel[i]
+    ??
+    0;
+
+  const slope=(next-prev)/2;
+
+  let tide=tideScore(slope,mark.tide);
+
+  let swellScore;
+
+  if(
+    swell>=mark.swellMin &&
+    swell<=mark.swellMax
+  ){
+    swellScore=92;
+  }else if(swell<mark.swellMin){
+    swellScore=clamp(
+      65+(mark.swellMin-swell)*70,
+      35,
+      88
+    );
+  }else{
+    swellScore=clamp(
+      92-(swell-mark.swellMax)*75,
+      8,
+      90
+    );
+  }
+
+  let periodScore;
+
+  if(
+    swellPeriod>=mark.periodMin &&
+    swellPeriod<=mark.periodMax
+  ){
+    periodScore=92;
+  }else{
+    periodScore=clamp(
+      92-
+      Math.abs(
+        swellPeriod-
+        ((mark.periodMin+mark.periodMax)/2)
+      )*12,
+      30,
+      88
+    );
+  }
+
+  const windGood=
+    inSector(
+      windDir,
+      mark.windMin,
+      mark.windMax
+    );
+
+  let windScore=
+    windGood?88:48;
+
+  if(wind>18)windScore-=20;
+  if(wind>25)windScore-=28;
+  if(gust>30)windScore-=15;
+
+  let clarity=82;
+
+  if(rain>70)clarity-=15;
+  if(wind>22)clarity-=10;
+  if(wave>1.2)clarity-=10;
+
+  clarity=clamp(clarity,25,95);
+
+  let weather=76;
+
+  if(cloud>=25&&cloud<=85)weather+=8;
+  if(rain>70)weather-=7;
+
+  weather=clamp(weather,40,90);
+
+  const tempScore=
+    clamp(
+      55+(seaTemp-10)*5,
+      35,
+      92
+    );
+
+  let report=60;
+
+  const reportHit=
+    REPORTS.find(
+      r=>
+        r.mark.toLowerCase()===
+        mark.name.toLowerCase()
+    );
+
+  if(reportHit)report=72;
+
+  const baseFishing=Math.round(
+    tide*.25+
+    swellScore*.15+
+    periodScore*.10+
+    windScore*.15+
+    clarity*.15+
+    weather*.10+
+    tempScore*.05+
+    report*.05
+  );
+
+  /* BASS ACTIVITY */
+
+  const activity=
+    getMarkActivity(mark.name);
+
+  const fishing=
+    applyBassActivity(
+      baseFishing,
+      activity
+    );
+
+  /* SAFETY */
+
+  let risk=0;
+
+  risk +=
+    Math.max(0,swell-.55)*27;
+
+  risk +=
+    Math.max(0,swellPeriod-8)*4;
+
+  risk +=
+    Math.max(0,wave-.75)*24;
+
+  risk +=
+    Math.max(0,wind-15)*2.4;
+
+  risk +=
+    Math.max(0,gust-22)*2.0;
+
+  if(!windGood)risk+=10;
+
+  const exposure={
+    sheltered:.65,
+    mixed:1,
+    exposed:1.25,
+    "very exposed":1.5
+  }[mark.exposure]||1;
+
+  risk*=exposure;
+
+  if(
+    (slope>0.006&&windDir>120&&windDir<300)||
+    (slope<-0.006&&windDir>300)
+  ){
+    risk+=8;
+  }
+
+  if(swell>1.4&&swellPeriod>9)
+    risk+=18;
+
+  if(gust>32&&swell>1)
+    risk+=18;
+
+  risk=clamp(risk,0,100);
+
+  let status="SAFE / NORMAL";
+
+  if(risk>=70)
+    status="DANGEROUS — DON'T FISH THIS MARK";
+  else if(risk>=48)
+    status="HIGH RISK";
+  else if(risk>=27)
+    status="CAUTION";
+
+  return {
+    fishing,
+    baseFishing,
+    activity,
+    risk,
+    status,
+    tide:tideLabel(slope),
+    slope,
+    wave,
+    wavePeriod,
+    swell,
+    swellPeriod,
+    wind,
+    gust,
+    windDir,
+    rain,
+    cloud,
+    temp,
+    seaTemp
+  };
+}
+
+function analyseMark(mark,weather,marine){
+
+  const times=weather.hourly.time;
+  const points=[];
+
+  for(
+    let i=0;
+    i<Math.min(times.length,48);
+    i++
+  ){
+
+    points.push(
+      evaluateHour(
+        mark,
+        {
+          ...weather.hourly,
+          ...marine.hourly
+        },
+        i
+      )
+    );
+  }
+
+  const safePoints=
+    points.filter(
+      p=>
+        p.status!=="DANGEROUS — DON'T FISH THIS MARK"
+    );
+
+  let best=points[0];
+
+  for(
+    const p of safePoints.length?
+      safePoints:
+      points
+  ){
+
+    if(p.fishing>best.fishing)
+      best=p;
+  }
+
+  const bestIndex=
+    points.indexOf(best);
+
+  let windowStart=bestIndex;
+  let windowEnd=bestIndex;
+
+  while(
+    windowStart>0 &&
+    points[windowStart-1].fishing>=65 &&
+    points[windowStart-1].status!=="DANGEROUS — DON'T FISH THIS MARK"
+  ){
+    windowStart--;
+  }
+
+  while(
+    windowEnd<points.length-1 &&
+    points[windowEnd+1].fishing>=65 &&
+    points[windowEnd+1].status!=="DANGEROUS — DON'T FISH THIS MARK"
+  ){
+    windowEnd++;
+  }
+
+  let departure=windowEnd;
+
+  for(
+    let i=bestIndex+1;
+    i<points.length;
+    i++
+  ){
+
+    if(
+      points[i].status==="DANGEROUS — DON'T FISH THIS MARK"||
+      points[i].risk-points[bestIndex].risk>=18||
+      points[i].fishing-points[bestIndex].fishing<=-18
+    ){
+
+      departure=
+        Math.max(bestIndex,i-1);
+
+      break;
+    }
+  }
+
+  const next24=
+    points.slice(0,24);
+
+  const avgRisk=
+    average(
+      next24.map(x=>x.risk)
+    );
+
+  const volatility=
+    Math.max(
+      ...next24.map(x=>x.fishing)
+    )-
+    Math.min(
+      ...next24.map(x=>x.fishing)
+    );
+
+  let confidence=84;
+
+  confidence-=
+    Math.min(
+      25,
+      Math.round(volatility/3)
+    );
+
+  confidence-=
+    Math.min(
+      18,
+      Math.round(avgRisk/7)
+    );
+
+  confidence=clamp(
+    confidence,
+    48,
+    94
+  );
+
+  let reasons=[];
+
+  if(
+    best.tide
+      .toLowerCase()
+      .includes(mark.tide)
+  ){
+    reasons.push(
+      "Tide movement matches this mark's preferred phase."
+    );
+  }
+
+  if(
+    best.swell>=mark.swellMin &&
+    best.swell<=mark.swellMax
+  ){
+    reasons.push(
+      "Swell is inside the preferred range."
+    );
+  }
+
+  if(
+    best.swellPeriod>=mark.periodMin &&
+    best.swellPeriod<=mark.periodMax
+  ){
+    reasons.push(
+      "Swell period is favourable."
+    );
+  }
+
+  if(
+    inSector(
+      best.windDir,
+      mark.windMin,
+      mark.windMax
+    )
+  ){
+    reasons.push(
+      "Wind direction is favourable for this mark."
+    );
+  }
+
+  if(best.rain>60){
+    reasons.push(
+      "Recent rain may add useful colour to the water."
+    );
+  }
+
+  if(mark.exposure==="sheltered"){
+    reasons.push(
+      "This mark has lower exposure than the open-coast alternatives."
+    );
+  }
+
+  if(
+    best.activity &&
+    best.activity.reports>0
+  ){
+
+    if(best.activity.signal>0){
+
+      reasons.push(
+        "Recent Bass Activity is supporting this mark."
+      );
+
+    }else if(best.activity.signal<0){
+
+      reasons.push(
+        "Recent Bass Activity is currently suppressing the opportunity score."
+      );
+    }
+  }
+
+  if(!reasons.length){
+
+    reasons.push(
+      "The model is finding a temporary combination of tide, sea state and weather that suits this mark."
+    );
+  }
+
+  return {
+    mark,
+    points,
+    best,
+    bestIndex,
+    windowStart,
+    windowEnd,
+    departure,
+    confidence,
+    reasons,
+    times,
+    updated:new Date()
+  };
+}
+
+async function fetchJSON(url){
+
+  const response=
+    await fetch(url);
+
+  if(!response.ok)
+    throw new Error(
+      "Forecast request failed"
+    );
+
+  return response.json();
+}
+
+async function loadApp(){
+
+  document.getElementById("statusText")
+    .textContent=
+    "Refreshing live coastal conditions…";
+
+  document.getElementById("appContent")
+    .innerHTML=
+    '<div class="loading">Checking the coast…</div>';
+
+  try{
+
+    const weatherPromises=
+      MARKS.map(mark=>
+        fetchJSON(
+          "https://api.open-meteo.com/v1/forecast"+
+          "?latitude="+mark.lat+
+          "&longitude="+mark.lon+
+          "&hourly=temperature_2m,precipitation_probability,cloud_cover,wind_speed_10m,wind_gusts_10m,wind_direction_10m"+
+          "&forecast_days=2"+
+          "&timezone=auto"+
+          "&wind_speed_unit=mph"
+        )
+      );
+
+    const marinePromises=
+      MARKS.map(mark=>
+        fetchJSON(
+          "https://marine-api.open-meteo.com/v1/marine"+
+          "?latitude="+mark.lat+
+          "&longitude="+mark.lon+
+          "&hourly=wave_height,wave_period,wave_direction,swell_wave_height,swell_wave_period,swell_wave_direction,sea_level_height_msl,sea_surface_temperature"+
+          "&forecast_days=2"+
+          "&timezone=auto"
+        )
+      );
+
+    const [
+      weatherData,
+      marineData
+    ]=
+      await Promise.all([
+        Promise.all(weatherPromises),
+        Promise.all(marinePromises)
+      ]);
+
+    results=
+      MARKS.map(
+        (mark,i)=>
+          analyseMark(
+            mark,
+            weatherData[i],
+            marineData[i]
+          )
+      );
+
+    renderHome();
+
+    document.getElementById("statusText")
+      .textContent=
+      "Live forecast • "+
+      MARKS.length+
+      " marks analysed • "+
+      "Bass Activity enabled • updated "+
+      new Date().toLocaleTimeString(
+        [],
+        {
+          hour:"2-digit",
+          minute:"2-digit",
+          hour12:false
+        }
+      );
+
+  }catch(error){
+
+    console.error(error);
+
+    document.getElementById("statusText")
+      .textContent=
+      "Forecast connection problem";
+
+    document.getElementById("appContent")
+      .innerHTML=
+      '<div class="error">Unable to load the live forecast right now. Check your connection and try refreshing.</div>';
+  }
+}
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+function renderHome(){
+
+  const ranked=
+    [...results].sort(
+      (a,b)=>
+        b.best.fishing-
+        a.best.fishing
+    );
+
+  const safe=
+    ranked.filter(
+      r=>
+        r.best.status!=="DANGEROUS — DON'T FISH THIS MARK"
+    );
+
+  const hero=
+    safe[0]||
+    ranked[0];
+
+  document.getElementById("appContent")
+    .innerHTML=`
+
+    ${renderHero(hero)}
+
+    ${renderTimeline(hero)}
+
+    ${renderMetrics(hero)}
+
+    ${renderBassActivityOverview(hero)}
+
+    ${renderRanked(ranked.slice(0,10))}
+
+    ${renderMarkExplorer()}
+
+    ${renderReportingSection()}
+
+    ${renderReports()}
+
+    ${renderHowItThinks()}
+  `;
+
+  bindExplorer();
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+function renderHero(r){
+
+  const score=r.best.fishing;
+  const deg=score*3.6;
+
+  const sClass=
+    safetyClass(r.best.status);
+
+  const departureTime=
+    r.times[r.departure];
+
+  const activity=
+    r.best.activity||
+    getMarkActivity(r.mark.name);
+
+  return `
+  <section class="hero">
+
+    <div class="hero-top">
+      <div class="eyebrow">
+        ★ BEST SAFE BET • NEXT 24 HOURS
+      </div>
+
+      <div class="live-pill">
+        LIVE MODEL
+      </div>
+    </div>
+
+    <h2>${r.mark.name}</h2>
+
+    <div class="hero-location">
+      ${r.mark.note}
+    </div>
+
+    <div class="hero-grid">
+
+      <div
+        class="score-ring"
+        style="background:conic-gradient(var(--cyan) ${deg}deg,#183139 ${deg}deg)"
+      >
+        <div class="score-inner">
+          <div class="score-number">
+            ${score}
+          </div>
+
+          <div class="score-label">
+            Opportunity / 100
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-copy">
+
+        <div class="window">
+          <div class="window-label">
+            Prime window
+          </div>
+
+          <strong>
+            ${fmtHour(r.times[r.windowStart])}
+            –
+            ${fmtHour(r.times[r.windowEnd])}
+          </strong>
+
+          <small>
+            Best combination of tide, sea state,
+            wind and Bass Activity.
+          </small>
+        </div>
+
+        <div class="window">
+          <div class="window-label">
+            Recommended latest departure
+          </div>
+
+          <strong>
+            ${fmtHour(departureTime)}
+          </strong>
+
+          <small>
+            Based on forecast deterioration after
+            the best period.
+          </small>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="safety ${sClass}">
+
+      <div class="safety-head">
+        <div class="safety-title">
+          Safety assessment
+        </div>
+
+        <div class="safety-status">
+          ${safetyLabel(r.best.status)}
+        </div>
+      </div>
+
+      <p>
+        ${safetyText(r)}
+      </p>
+
+    </div>
+
+  </section>`;
+}
+
+function safetyText(r){
+
+  if(
+    r.best.status===
+    "DANGEROUS — DON'T FISH THIS MARK"
+  ){
+
+    return "Conditions are currently too hazardous for this mark. Fishing potential never overrides the safety assessment.";
+  }
+
+  if(r.best.status==="HIGH RISK"){
+
+    return "Conditions require significant caution. This mark is exposed to sea-state changes and should only be considered by experienced anglers who can safely assess the actual sea.";
+  }
+
+  if(r.best.status==="CAUTION"){
+
+    return "Some conditions require extra care. Check the actual sea, access and exit route before fishing.";
+  }
+
+  return "No major forecast safety trigger is currently detected for the analysed window. This does not guarantee safe conditions.";
+}
+
+/* =========================================================
+   TIMELINE
+   ========================================================= */
+
+function renderTimeline(r){
+
+  return `
+  <section class="section">
+
+    <div class="section-head">
+      <div>
+        <h3>
+          24-hour fishing timeline
+        </h3>
+
+        <div class="section-sub">
+          Opportunity + independent safety
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline">
+
+      ${r.points.slice(0,24).map((p,i)=>`
+
+        <div class="hour ${safetyClass(p.status)}">
+
+          <div class="hour-time">
+            ${fmtHour(r.times[i])}
+          </div>
+
+          <div class="hour-score ${scoreClass(p.fishing)}">
+            ${p.fishing}
+          </div>
+
+          <div class="hour-tide">
+            ${p.tide}
+          </div>
+
+        </div>
+
+      `).join("")}
+
+    </div>
+
+  </section>`;
+}
+
+/* =========================================================
+   METRICS
+   ========================================================= */
+
+function renderMetrics(r){
+
+  const p=r.best;
+
+  return `
+  <section class="section">
+
+    <div class="section-head">
+      <div>
+
+        <h3>
+          Live conditions
+        </h3>
+
+        <div class="section-sub">
+          At the model's best fishing point
+        </div>
+
+      </div>
+    </div>
+
+    <div class="metrics">
+
+      <div class="metric">
+        <div class="metric-label">Tide</div>
+        <div class="metric-value">${p.tide}</div>
+        <div class="metric-note">
+          Preferred: ${r.mark.tide}
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Swell</div>
+        <div class="metric-value">
+          ${p.swell.toFixed(1)} m
+        </div>
+        <div class="metric-note">
+          ${p.swellPeriod.toFixed(0)} sec period
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Wave</div>
+        <div class="metric-value">
+          ${p.wave.toFixed(1)} m
+        </div>
+        <div class="metric-note">
+          ${p.wavePeriod.toFixed(0)} sec period
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Wind</div>
+        <div class="metric-value">
+          ${Math.round(p.wind)} mph
+        </div>
+        <div class="metric-note">
+          Gusts ${Math.round(p.gust)} mph
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Wind direction</div>
+        <div class="metric-value">
+          ${Math.round(p.windDir)}°
+        </div>
+        <div class="metric-note">
+          Preference ${r.mark.windMin}–${r.mark.windMax}°
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">
+          Sea temperature
+        </div>
+        <div class="metric-value">
+          ${p.seaTemp.toFixed(1)}°C
+        </div>
+        <div class="metric-note">
+          Forecast sea surface
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">Cloud</div>
+        <div class="metric-value">
+          ${Math.round(p.cloud)}%
+        </div>
+        <div class="metric-note">
+          Light conditions
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-label">
+          Rain chance
+        </div>
+        <div class="metric-value">
+          ${Math.round(p.rain)}%
+        </div>
+        <div class="metric-note">
+          Forecast probability
+        </div>
+      </div>
+
+    </div>
+
+  </section>`;
+}
+
+/* =========================================================
+   BASS ACTIVITY OVERVIEW
+   ========================================================= */
+
+function renderBassActivityOverview(r){
+
+  const activity=
+    r.best.activity||
+    getMarkActivity(r.mark.name);
+
+  const score=
+    activity.score??50;
+
+  const signal=
+    activity.signal??0;
+
+  let signalText="Neutral";
+
+  if(signal>=10)
+    signalText="Strong positive";
+  else if(signal>=4)
+    signalText="Positive";
+  else if(signal<=-10)
+    signalText="Strong negative";
+  else if(signal<=-4)
+    signalText="Negative";
+
+  return `
+  <section class="section">
+
+    <div class="section-head">
+      <div>
+
+        <h3>
+          🎣 Bass Activity
+        </h3>
+
+        <div class="section-sub">
+          Real-world catch intelligence
+        </div>
+
+      </div>
+    </div>
+
+    <div class="activity-card">
+
+      <div class="activity-top">
+
+        <div>
+          <div class="activity-title">
+            ${activity.label||"NO DATA"}
+          </div>
+
+          <div class="activity-label">
+            ${signalText.toUpperCase()}
+          </div>
+        </div>
+
+        <div class="activity-score">
+          ${score}
+        </div>
+
+      </div>
+
+      <div class="activity-bar">
+        <div
+          class="activity-fill"
+          style="width:${score}%"
+        ></div>
+      </div>
+
+      <div class="activity-stats">
+
+        <div class="activity-stat">
+          <strong>${activity.catches||0}</strong>
+          <span>Catches</span>
+        </div>
+
+        <div class="activity-stat">
+          <strong>${activity.blanks||0}</strong>
+          <span>Blanks</span>
+        </div>
+
+        <div class="activity-stat">
+          <strong>${activity.confidence||0}%</strong>
+          <span>Evidence</span>
+        </div>
+
+      </div>
+
+      <div class="activity-note">
+
+        Bass Activity is currently based on reports stored
+        in this device. As more real catch and blank sessions
+        are recorded, this becomes increasingly useful.
+
+        ${activity.reports?
+          "The current evidence is already influencing this mark's opportunity score.":
+          "No user reports have yet been recorded for this mark."}
+
+      </div>
+
+    </div>
+
+  </section>`;
+}
+
+/* =========================================================
+   RANKING
+   ========================================================= */
+
+function renderRanked(list){
+
+  return `
+  <section class="section">
+
+    <div class="section-head">
+
+      <div>
+
+        <h3>
+          Top 10 marks
+        </h3>
+
+        <div class="section-sub">
+          Ranked from all ${MARKS.length} analysed marks
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="rank-list">
+
+      ${list.map((r,i)=>`
+
+        <div
+          class="rank-card"
+          onclick="openMark('${escapeAttr(r.mark.name)}')"
+        >
+
+          <div class="rank-no">
+            ${i+1}
+          </div>
+
+          <div>
+
+            <div class="rank-name">
+              ${r.mark.name}
+            </div>
+
+            <div class="rank-info">
+              ${r.mark.tide==="ebb"?"Low-water":"High-water"}
+              preference •
+              ${r.mark.exposure}
+            </div>
+
+          </div>
+
+          <div>
+
+            <div class="rank-score ${scoreClass(r.best.fishing)}">
+              ${r.best.fishing}
+            </div>
+
+            <div class="rank-safety ${
+              safetyClass(r.best.status)==="safe"
+                ?"green"
+                :safetyClass(r.best.status)==="caution"
+                  ?"yellow"
+                  :safetyClass(r.best.status)==="high"
+                    ?"orange"
+                    :"red"
+            }">
+
+              ${safetyLabel(r.best.status)}
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `).join("")}
+
+    </div>
+
+  </section>`;
+}
+
+/* =========================================================
+   MARK EXPLORER
+   ========================================================= */
+
+function renderMarkExplorer(){
+
+  return `
+  <section class="section" id="explorer">
+
+    <div class="section-head">
+
+      <div>
+
+        <h3>
+          Explore all marks
+        </h3>
+
+        <div class="section-sub">
+          Tap any mark for its full live forecast
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="tabs">
+
+      <button
+        class="tab active"
+        data-filter="all"
+      >
+        ALL ${MARKS.length}
+      </button>
+
+      <button
+        class="tab"
+        data-filter="low"
+      >
+        LOW WATER
+      </button>
+
+      <button
+        class="tab"
+        data-filter="high"
+      >
+        HIGH WATER
+      </button>
+
+    </div>
+
+    <input
+      id="markSearch"
+      class="search"
+      placeholder="Search marks…"
+      autocomplete="off"
+    >
+
+    <div
+      id="allMarks"
+      class="all-marks"
+    ></div>
+
+  </section>`;
+}
+
+function bindExplorer(){
+
+  document.querySelectorAll(".tab")
+    .forEach(btn=>{
+
+      btn.addEventListener(
+        "click",
+        ()=>{
+
+          document
+            .querySelectorAll(".tab")
+            .forEach(
+              x=>
+                x.classList.remove("active")
+            );
+
+          btn.classList.add("active");
+
+          currentFilter=
+            btn.dataset.filter;
+
+          renderAllMarks();
+
+        }
+      );
+
+    });
+
+  const search=
+    document.getElementById(
+      "markSearch"
+    );
+
+  if(search){
+
+    search.addEventListener(
+      "input",
+      renderAllMarks
+    );
+  }
+
+  renderAllMarks();
+}
+
+function renderAllMarks(){
+
+  const box=
+    document.getElementById(
+      "allMarks"
+    );
+
+  if(!box)return;
+
+  const q=
+    (
+      document.getElementById(
+        "markSearch"
+      )?.value||
+      ""
+    ).toLowerCase();
+
+  const list=
+    [...results]
+      .filter(
+        r=>
+          currentFilter==="all"||
+          r.mark.type===currentFilter
+      )
+      .filter(
+        r=>
+          r.mark.name
+            .toLowerCase()
+            .includes(q)
+      )
+      .sort(
+        (a,b)=>
+          b.best.fishing-
+          a.best.fishing
+      );
+
+  box.innerHTML=
+    list.map(r=>`
+
+      <div
+        class="mark-row"
+        onclick="openMark('${escapeAttr(r.mark.name)}')"
+      >
+
+        <div class="mark-main">
+
+          <strong>
+            ${r.mark.name}
+          </strong>
+
+          <span>
+            ${r.mark.type==="low"?"Low-water":"High-water"}
+            •
+            ${r.mark.exposure}
+          </span>
+
+        </div>
+
+        <div class="mark-right">
+
+          <strong
+            class="${scoreClass(r.best.fishing)}"
+          >
+            ${r.best.fishing}
+          </strong>
+
+          <small>
+            ${safetyLabel(r.best.status)}
+          </small>
+
+        </div>
+
+      </div>
+
+    `).join("");
+
+  if(!list.length){
+
+    box.innerHTML=
+      '<div class="info">No marks match that search.</div>';
+  }
+}
+
+/* =========================================================
+   REPORTING SECTION
+   ========================================================= */
+
+function renderReportingSection(){
+
+  return `
+  <section class="section">
+
+    <div class="section-head">
+
+      <div>
+
+        <h3>
+          🎣 Feed Bass Finder
+        </h3>
+
+        <div class="section-sub">
+          Real catches make the model smarter
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="info" style="margin-bottom:9px">
+
+      <strong>
+        Help build the Bass Activity database.
+      </strong>
+
+      <br>
+
+      You only need to tell us where, when and what
+      you caught. Bass Finder will eventually match
+      that report against the actual forecast conditions
+      for that mark and time.
+
+    </div>
+
+    <div class="report-actions">
+
+      <button
+        class="report-button report-catch"
+        onclick="openReportForm('catch')"
+      >
+        🎣 REPORT A CATCH
+      </button>
+
+      <button
+        class="report-button report-blank"
+        onclick="openReportForm('blank')"
+      >
+        🚫 REPORT A BLANK
+      </button>
+
+    </div>
+
+  </section>`;
+}
+
+/* =========================================================
+   REPORT FORM
+   ========================================================= */
+
+function openReportForm(type){
+
+  const isCatch=
+    type==="catch";
+
+  const today=
+    new Date()
+      .toISOString()
+      .slice(0,10);
+
+  const now=
+    new Date()
+      .toTimeString()
+      .slice(0,5);
+
+  const markOptions=
+    MARKS.map(
+      mark=>
+        `<option value="${escapeHtml(mark.name)}">
+          ${escapeHtml(mark.name)}
+        </option>`
+    ).join("");
+
+  document.getElementById("drawerContent")
+    .innerHTML=`
+
+    <div class="eyebrow">
+      ${isCatch?"CATCH REPORT":"BLANK SESSION"}
+    </div>
+
+    <h2 class="drawer-title">
+      ${isCatch?"🎣 Report a catch":"🚫 Report a blank"}
+    </h2>
+
+    <div class="drawer-location">
+      The simpler this is, the more likely people are
+      to actually submit reports.
+    </div>
+
+    <div style="margin-top:16px">
+
+      <p class="form-help">
+
+        ${isCatch
+          ?"We only need the essentials. Environmental conditions will be matched automatically later."
+          :"A blank is useful data too. It tells the model when apparently good conditions failed to produce."
+        }
+
+      </p>
+
+      <div class="form-group">
+
+        <label class="form-label">
+          Mark
+        </label>
+
+        <select
+          id="reportMark"
+          class="form-select"
+        >
+          ${markOptions}
+        </select>
+
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+
+          <label class="form-label">
+            Date
+          </label>
+
+          <input
+            id="reportDate"
+            class="form-input"
+            type="date"
+            value="${today}"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label">
+            ${isCatch?"Catch time":"Arrival time"}
+          </label>
+
+          <input
+            id="reportTime"
+            class="form-input"
+            type="time"
+            value="${now}"
+          >
+
+        </div>
+
+      </div>
+
+      ${
+        isCatch
+        ?`
+
+        <div class="form-grid">
+
+          <div class="form-group">
+
+            <label class="form-label">
+              Number of bass
+            </label>
+
+            <input
+              id="reportCount"
+              class="form-input"
+              type="number"
+              min="1"
+              max="50"
+              value="1"
+            >
+
+          </div>
+
+          <div class="form-group">
+
+            <label class="form-label">
+              Largest / fish length cm
+            </label>
+
+            <input
+              id="reportLength"
+              class="form-input"
+              type="number"
+              min="1"
+              max="150"
+              placeholder="Optional"
+            >
+
+          </div>
+
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+
+            <label class="form-label">
+              Method
+            </label>
+
+            <select
+              id="reportMethod"
+              class="form-select"
+            >
+
+              <option value="">
+                Select
+              </option>
+
+              <option value="Lure">
+                Lure
+              </option>
+
+              <option value="Bait">
+                Bait
+              </option>
+
+              <option value="Fly">
+                Fly
+              </option>
+
+              <option value="Other">
+                Other
+              </option>
+
+            </select>
+
+          </div>
+
+          <div class="form-group">
+
+            <label class="form-label">
+              Lure
+            </label>
+
+            <input
+              id="reportLure"
+              class="form-input"
+              type="text"
+              placeholder="Optional"
+            >
+
+          </div>
+
+        </div>
+
+        `
+        :`
+
+        <div class="form-group">
+
+          <label class="form-label">
+            Departure time
+          </label>
+
+          <input
+            id="reportDeparture"
+            class="form-input"
+            type="time"
+            value="${now}"
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label class="form-label">
+            Method
+          </label>
+
+          <select
+            id="reportMethod"
+            class="form-select"
+          >
+
+            <option value="">
+              Select
+            </option>
+
+            <option value="Lure">
+              Lure
+            </option>
+
+            <option value="Bait">
+              Bait
+            </option>
+
+            <option value="Fly">
+              Fly
+            </option>
+
+            <option value="Other">
+              Other
+            </option>
+
+          </select>
+
+        </div>
+
+        `
+      }
+
+      <div class="form-group">
+
+        <label class="form-label">
+          Notes
+        </label>
+
+        <textarea
+          id="reportNotes"
+          class="form-textarea"
+          placeholder="${
+            isCatch
+              ?"Optional — anything useful about the catch."
+              :"Optional — anything notable about the session."
+          }"
+        ></textarea>
+
+      </div>
+
+      <button
+        class="submit-button"
+        onclick="submitReport('${type}')"
+      >
+        ${
+          isCatch
+            ?"SAVE CATCH REPORT"
+            :"SAVE BLANK SESSION"
+        }
+      </button>
+
+      <button
+        class="cancel-button"
+        onclick="closeMark()"
+      >
+        CANCEL
+      </button>
+
+    </div>
+  `;
+
+  document.getElementById("drawer")
+    .classList.remove("hidden");
+
+  document.body.style.overflow="hidden";
+}
+
+/* =========================================================
+   SUBMIT REPORT
+   ========================================================= */
+
+function submitReport(type){
+
+  const markName=
+    document.getElementById(
+      "reportMark"
+    )?.value||"";
+
+  const date=
+    document.getElementById(
+      "reportDate"
+    )?.value||"";
+
+  const time=
+    document.getElementById(
+      "reportTime"
+    )?.value||"";
+
+  const method=
+    document.getElementById(
+      "reportMethod"
+    )?.value||"";
+
+  const notes=
+    document.getElementById(
+      "reportNotes"
+    )?.value.trim()||"";
+
+  if(!markName||!date||!time){
+
+    alert(
+      "Please enter the mark, date and time."
+    );
+
+    return;
+  }
+
+  const data={
+    markId:markName,
+    markName:markName,
+    date,
+    time,
+    method,
+    notes
+  };
+
+  if(type==="catch"){
+
+    data.fishCount=
+      Number(
+        document.getElementById(
+          "reportCount"
+        )?.value||1
+      );
+
+    data.fishLength=
+      document.getElementById(
+        "reportLength"
+      )?.value||"";
+
+    data.lure=
+      document.getElementById(
+        "reportLure"
+      )?.value.trim()||"";
+
+    if(
+      typeof addBassCatch!=="function"
+    ){
+
+      alert(
+        "Bass Activity engine could not be loaded."
+      );
+
+      return;
+    }
+
+    addBassCatch(data);
+
+  }else{
+
+    data.departureTime=
+      document.getElementById(
+        "reportDeparture"
+      )?.value||"";
+
+    /*
+       The current engine stores the blank session's
+       arrival/departure information inside the report
+       metadata. This will be upgraded to structured
+       session data in the next database revision.
+    */
+
+    data.notes=
+      "Session: "+
+      time+
+      "–"+
+      data.departureTime+
+      (
+        notes
+          ?" • "+notes
+          :""
+      );
+
+    if(
+      typeof addBassBlank!=="function"
+    ){
+
+      alert(
+        "Bass Activity engine could not be loaded."
+      );
+
+      return;
+    }
+
+    addBassBlank(data);
+  }
+
+  closeMark();
+
+  /*
+     Refresh the live model immediately so the new
+     report can influence Bass Activity.
+  */
+
+  loadApp();
+
+  setTimeout(
+    ()=>{
+      alert(
+        type==="catch"
+          ?"🎣 Catch report saved. Bass Finder can now use it as real-world activity data."
+          :"🚫 Blank session saved. That is valuable data too."
+      );
+    },
+    300
+  );
+}
+
+/* =========================================================
+   STORED USER REPORTS
+   ========================================================= */
+
+function renderReports(){
+
+  const stored=
+    typeof getBassReports==="function"
+      ?getBassReports()
+      :[];
+
+  if(!stored.length){
+
+    return `
+    <section class="section">
+
+      <div class="section-head">
+
+        <div>
+
+          <h3>
+            Recent catch intelligence
+          </h3>
+
+          <div class="section-sub">
+            Your recorded fishing data
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="info">
+
+        <strong>
+          No personal reports yet.
+        </strong>
+
+        <br><br>
+
+        Record your first catch or blank session above
+        and it will start building the Bass Activity
+        database.
+
+      </div>
+
+    </section>`;
+  }
+
+  const latest=
+    [...stored]
+      .sort(
+        (a,b)=>
+          new Date(b.submittedAt)-
+          new Date(a.submittedAt)
+      )
+      .slice(0,8);
+
+  return `
+  <section class="section">
+
+    <div class="section-head">
+
+      <div>
+
+        <h3>
+          Recent catch intelligence
+        </h3>
+
+        <div class="section-sub">
+          Your recorded sessions
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="reports">
+
+      ${latest.map(report=>`
+
+        <div class="report">
+
+          <div class="report-head">
+
+            <strong>
+
+              ${
+                report.type==="catch"
+                  ?"🎣 "+escapeHtml(report.markName)
+                  :"🚫 "+escapeHtml(report.markName)
+              }
+
+            </strong>
+
+            <span class="report-date">
+
+              ${escapeHtml(report.date)}
+              ${escapeHtml(report.time)}
+
+            </span>
+
+          </div>
+
+          <p>
+
+            ${
+              report.type==="catch"
+                ?(
+                  (report.fishCount||1)+
+                  " bass"+
+                  (
+                    report.fishLength
+                      ?" • "+report.fishLength+"cm"
+                      :""
+                  )+
+                  (
+                    report.method
+                      ?" • "+escapeHtml(report.method)
+                      :""
+                  )
+                )
+                :"Blank session"+
+                 (
+                   report.method
+                     ?" • "+escapeHtml(report.method)
+                     :""
+                 )
+            }
+
+            ${
+              report.notes
+                ?" • "+escapeHtml(report.notes)
+                :""
+            }
+
+          </p>
+
+        </div>
+
+      `).join("")}
+
+    </div>
+
+    <div class="info" style="margin-top:8px">
+
+      <strong>
+        Data principle:
+      </strong>
+
+      We don't ask anglers to estimate swell, wind,
+      tide or water clarity. The aim is to match the
+      recorded catch time and mark against objective
+      environmental data.
+
+    </div>
+
+  </section>`;
+}
+
+/* =========================================================
+   HOW IT THINKS
+   ========================================================= */
+
+function renderHowItThinks(){
+
+  return `
+  <section class="section">
+
+    <div class="section-head">
+
+      <div>
+
+        <h3>
+          How Bass Finder thinks
+        </h3>
+
+      </div>
+
+    </div>
+
+    <div class="info">
+
+      Every mark is analysed independently rather than
+      simply selecting from a fixed shortlist.
+
+      <br><br>
+
+      Fishing opportunity considers
+      <strong>
+        tide movement, swell height, swell period,
+        wind, water clarity proxy, weather/light,
+        sea temperature and Bass Activity.
+      </strong>
+
+      <br><br>
+
+      <strong>Bass Activity</strong> is deliberately
+      cautious while the database is small. Catches
+      increase the signal and blank sessions reduce it.
+
+      <br><br>
+
+      Safety is calculated separately using
+      <strong>
+        swell, wave height, wave period, wind, gusts,
+        exposure, wind direction and tide interaction.
+      </strong>
+
+      <br><br>
+
+      A mark can therefore have excellent fishing
+      conditions but poor Bass Activity — or excellent
+      Bass Activity while the current sea conditions
+      are poor.
+
+      <br><br>
+
+      <strong>
+        Safety always wins.
+      </strong>
+
+    </div>
+
+  </section>`;
+}
+
+/* =========================================================
+   MARK DRAWER
+   ========================================================= */
+
+function openMark(name){
+
+  currentMark=
+    results.find(
+      r=>r.mark.name===name
+    );
+
+  if(!currentMark)return;
+
+  const r=currentMark;
+  const p=r.best;
+
+  const activity=
+    p.activity||
+    getMarkActivity(r.mark.name);
+
+  document.getElementById("drawerContent")
+    .innerHTML=`
+
+    <div class="eyebrow">
+      LIVE MARK INTELLIGENCE
+    </div>
+
+    <h2 class="drawer-title">
+      ${r.mark.name}
+    </h2>
+
+    <div class="drawer-location">
+      ${r.mark.note}
+    </div>
+
+    <div style="margin-top:15px">
+
+      ${renderHero(r)}
+
+    </div>
+
+    ${renderBassActivityDrawer(activity)}
+
+    ${renderTimeline(r)}
+
+    ${renderMetrics(r)}
+
+    <section class="section">
+
+      <div class="section-head">
+
+        <div>
+
+          <h3>
+            Why this mark?
+          </h3>
+
+          <div class="section-sub">
+            Model explanation
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="reason-list">
+
+        ${r.reasons.map(
+          x=>
+            `<div class="reason">
+              ✓ ${x}
+            </div>`
+        ).join("")}
+
+      </div>
+
+    </section>
+
+    <section class="section">
+
+      <div class="info">
+
+        <strong>
+          Model confidence: ${r.confidence}%
+        </strong>
+
+        <br><br>
+
+        Confidence describes how stable the
+        forecast-derived assessment is.
+
+        <br><br>
+
+        It is not a probability of catching a bass.
+
+      </div>
+
+    </section>
+  `;
+
+  document.getElementById("drawer")
+    .classList.remove("hidden");
+
+  document.body.style.overflow="hidden";
+}
+
+function renderBassActivityDrawer(activity){
+
+  return `
+  <section class="section">
+
+    <div class="activity-card">
+
+      <div class="activity-top">
+
+        <div>
+
+          <div class="activity-title">
+            🎣 Bass Activity
+          </div>
+
+          <div class="activity-label">
+            ${activity.label||"NO DATA"}
+          </div>
+
+        </div>
+
+        <div class="activity-score">
+          ${activity.score??50}
+        </div>
+
+      </div>
+
+      <div class="activity-bar">
+
+        <div
+          class="activity-fill"
+          style="width:${activity.score??50}%"
+        ></div>
+
+      </div>
+
+      <div class="activity-stats">
+
+        <div class="activity-stat">
+          <strong>${activity.catches||0}</strong>
+          <span>Catches</span>
+        </div>
+
+        <div class="activity-stat">
+          <strong>${activity.blanks||0}</strong>
+          <span>Blanks</span>
+        </div>
+
+        <div class="activity-stat">
+          <strong>${activity.confidence||0}%</strong>
+          <span>Evidence</span>
+        </div>
+
+      </div>
+
+      <div class="activity-note">
+
+        ${
+          activity.reports
+            ?(
+              "This mark has "+
+              activity.reports+
+              " recorded report"+
+              (
+                activity.reports===1
+                  ?""
+                  :"s"
+              )+
+              "."
+            )
+            :"There are currently no recorded user reports for this mark."
+        }
+
+      </div>
+
+    </div>
+
+  </section>`;
+}
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+function escapeAttr(s){
+
+  return String(s)
+    .replace(/\\/g,"\\\\")
+    .replace(/'/g,"\\'");
+}
+
+function escapeHtml(s){
+
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+/* =========================================================
+   DRAWER
+   ========================================================= */
+
+function closeMark(){
+
+  document.getElementById("drawer")
+    .classList.add("hidden");
+
+  document.body.style.overflow="";
+
+  currentMark=null;
+}
+
+function closeDrawer(e){
+
+  if(e.target.id==="drawer")
+    closeMark();
+}
+
+document.addEventListener(
+  "keydown",
+  e=>{
+    if(e.key==="Escape")
+      closeMark();
+  }
+);
+
+/* =========================================================
+   SERVICE WORKER
+   ========================================================= */
+
+if("serviceWorker" in navigator){
+
+  window.addEventListener(
+    "load",
+    ()=>{
+      navigator.serviceWorker
+        .register("./sw.js")
+        .catch(()=>{});
+    }
+  );
+}
+
+loadApp();
+</script>
+
+</body>
+</html>
