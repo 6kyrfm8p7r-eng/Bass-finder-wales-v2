@@ -4097,29 +4097,44 @@ if("serviceWorker" in navigator){
       60 *
       1000;
 
-    let startIndex =
-      times.findIndex(t =>
-        new Date(t).getTime() >= startTime
-      );
+    let startIndex = -1;
 
-    let endIndex = -1;
+let endIndex = -1;
 
-    for(
-      let i = times.length - 1;
-      i >= 0;
-      i--
-    ){
 
-      if(
-        new Date(times[i]).getTime() <= endTime
-      ){
+/*
+  Match the tide window to the actual
+  forecast timestamps.
 
-        endIndex = i;
-        break;
+  The tide series is 15-minute data while
+  the fishing forecast is hourly, so we
+  deliberately match by time rather than
+  array position.
+*/
 
-      }
+for(let i = 0; i < times.length; i++){
 
-    }
+  const forecastTime =
+    new Date(times[i]).getTime();
+
+  if(
+    startIndex < 0 &&
+    forecastTime >= startTime
+  ){
+
+    startIndex = i;
+
+  }
+
+  if(
+    forecastTime <= endTime
+  ){
+
+    endIndex = i;
+
+  }
+
+}
 
     /*
       Never recommend a time that has already passed.
