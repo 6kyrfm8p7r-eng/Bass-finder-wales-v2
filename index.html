@@ -4033,6 +4033,7 @@ const tideLevels =
     : useHourlyTides
       ? hourlyTideLevels
       : [];
+result.dnaDebug = {
   source:
     useFifteenMinuteTides
       ? "15m"
@@ -4172,12 +4173,12 @@ const next =
     /*
       Find the next relevant tide for this mark.
     */
-
+result.dnaDebug.highs =
   events.filter(
     event => event.type === "high"
   ).length;
 
-
+result.dnaDebug.lows =
   events.filter(
     event => event.type === "low"
   ).length;
@@ -4226,7 +4227,8 @@ const relevantEvent =
   relevantEvents[0];
 if(relevantEvent){
 
-
+result.dnaDebug.selected =
+  
     relevantEvent.type +
     " " +
     relevantEvent.time.toLocaleTimeString(
