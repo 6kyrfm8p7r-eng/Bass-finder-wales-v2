@@ -3971,11 +3971,42 @@ if("serviceWorker" in navigator){
     const profile =
       getMarkProfile(mark);
 
-    const tideTimes =
-      marine?.minutely_15?.time || [];
+    /*
+  Use the highest-resolution tide data available.
 
-    const tideLevels =
-      marine?.minutely_15?.sea_level_height_msl || [];
+  Prefer the 15-minute sea-level forecast, but fall
+  back to the hourly sea-level series if the 15-minute
+  series is unavailable or incomplete.
+*/
+
+const fifteenMinuteTimes =
+  marine?.minutely_15?.time || [];
+
+const fifteenMinuteLevels =
+  marine?.minutely_15?.sea_level_height_msl || [];
+
+const hourlyTideTimes =
+  marine?.hourly?.time || [];
+
+const hourlyTideLevels =
+  marine?.hourly?.sea_level_height_msl || [];
+
+
+const useFifteenMinuteTides =
+  fifteenMinuteTimes.length >= 3 &&
+  fifteenMinuteLevels.length >= 3;
+
+
+const tideTimes =
+  useFifteenMinuteTides
+    ? fifteenMinuteTimes
+    : hourlyTideTimes;
+
+
+const tideLevels =
+  useFifteenMinuteTides
+    ? fifteenMinuteLevels
+    : hourlyTideLevels;
 
     const times =
       result.times ||
@@ -3983,12 +4014,18 @@ if("serviceWorker" in navigator){
       [];
 
     if(
-      !times.length ||
-      !tideTimes.length ||
-      !tideLevels.length
-    ){
-      return result;
-    }
+  !times.length ||
+  tideTimes.length < 3 ||
+  tideLevels.length < 3
+){
+
+  console.warn(
+    "Fishing DNA: tide data unavailable for",
+    mark.name
+  );
+
+  return result;
+}
 
     const now = new Date();
 
@@ -4014,14 +4051,36 @@ if("serviceWorker" in navigator){
       i++
     ){
 
-      const prev =
-        Number(tideLevels[i - 1]);
+      const prevRaw =
+  tideLevels[i - 1];
 
-      const current =
-        Number(tideLevels[i]);
+const currentRaw =
+  tideLevels[i];
 
-      const next =
-        Number(tideLevels[i + 1]);
+const nextRaw =
+  tideLevels[i + 1];
+
+
+if(
+  prevRaw === null ||
+  prevRaw === undefined ||
+  currentRaw === null ||
+  currentRaw === undefined ||
+  nextRaw === null ||
+  nextRaw === undefined
+){
+  continue;
+}
+
+
+const prev =
+  Number(prevRaw);
+
+const current =
+  Number(currentRaw);
+
+const next =
+  Number(nextRaw);
 
       if(
         !Number.isFinite(prev) ||
