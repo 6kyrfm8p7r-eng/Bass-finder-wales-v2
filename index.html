@@ -2329,11 +2329,12 @@ function renderHero(r){
             Prime window
           </div>
 
-          <strong>
-            ${fmtHour(r.times[r.windowStart])}
-            –
-            ${fmtHour(r.times[r.windowEnd])}
-          </strong>
+       <strong>
+  ${fmtPrimeWindow(
+    r.times[r.windowStart],
+    r.times[r.windowEnd]
+  )}
+</strong>
 
           <small>
             Best combination of tide, sea state,
