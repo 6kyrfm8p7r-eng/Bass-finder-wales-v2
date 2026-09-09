@@ -4061,23 +4061,61 @@ if("serviceWorker" in navigator){
       Find the next relevant tide for this mark.
     */
 
-    const relevantEvent =
-      events.find(event =>
-        event.type === profile.tideReference &&
-        event.time >= now &&
-        event.time <= horizon
-      );
+    const relevantEvents =
+  events
+    .filter(event =>
+      event.type === profile.tideReference
+    )
+    .map(event => {
 
-    if(!relevantEvent){
+      const eventStart =
+        new Date(
+          event.time.getTime() -
+          profile.primeBeforeHours *
+          60 *
+          60 *
+          1000
+        );
 
-      console.warn(
-        "Fishing DNA: no relevant tide found for",
-        mark.name
-      );
+      const eventEnd =
+        new Date(
+          event.time.getTime() +
+          profile.primeAfterHours *
+          60 *
+          60 *
+          1000
+        );
 
-      return result;
+      return {
+        ...event,
+        windowStart:eventStart,
+        windowEnd:eventEnd
+      };
 
-    }
+    })
+    .filter(event =>
+      event.windowEnd >= now &&
+      event.windowStart <= horizon
+    )
+    .sort((a,b) =>
+      a.windowStart - b.windowStart
+    );
+
+
+const relevantEvent =
+  relevantEvents[0];
+
+
+if(!relevantEvent){
+
+  console.warn(
+    "Fishing DNA: no usable tide window for",
+    mark.name
+  );
+
+  return result;
+
+}
 
     /*
       Build the mark-specific prime window.
