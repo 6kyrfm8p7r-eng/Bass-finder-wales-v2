@@ -2336,6 +2336,14 @@ function renderHero(r){
     r.times[r.windowEnd]
   )}
 </strong>
+${r.tideEventTime ? `
+  <small>
+    ${r.tideEventType === "low"
+      ? "Low water"
+      : "High water"}:
+    ${fmtHour(r.tideEventTime)}
+  </small>
+` : ""}
 
           <small>
             Best combination of tide, sea state,
