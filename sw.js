@@ -1,4 +1,4 @@
-const CACHE_NAME = "bass-finder-wales-v4";
+const CACHE_NAME = "bass-finder-wales-v5";
 
 const APP_FILES = [
   "./",
