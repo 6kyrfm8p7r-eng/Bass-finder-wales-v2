@@ -2327,9 +2327,11 @@ function renderHero(r){
       <div class="hero-copy">
 
         <div class="window">
-          <div class="window-label">
-            Prime window
-          </div>
+         <div class="window-label">
+  ${r.nextPrimeWindow
+    ? "Next prime window"
+    : "Prime window"}
+</div>
 
        <strong>
   ${fmtPrimeWindow(
@@ -4363,7 +4365,8 @@ for(let i = 0; i < times.length; i++){
 
     result.tideEventTime =
       relevantEvent.time.toISOString();
-
+result.nextPrimeWindow =
+  relevantEvent.windowStart > now;
     /*
       Replace the generic window with
       the mark-specific Fishing DNA window.
