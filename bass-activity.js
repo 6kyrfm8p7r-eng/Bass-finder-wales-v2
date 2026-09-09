@@ -624,3 +624,94 @@ function bassActivityDebug() {
 
   return reports;
 }
+
+/* =========================================================
+   FORECAST WINDOW ALIGNMENT
+   ========================================================= */
+
+(function alignForecastToNow(){
+
+  const originalFetch = window.fetch.bind(window);
+
+  window.fetch = async function(...args){
+
+    const response = await originalFetch(...args);
+
+    const url =
+      typeof args[0] === "string"
+        ? args[0]
+        : args[0]?.url || "";
+
+    if(
+      !url.includes("api.open-meteo.com") &&
+      !url.includes("marine-api.open-meteo.com")
+    ){
+      return response;
+    }
+
+    const originalJson = response.json.bind(response);
+
+    response.json = async function(){
+
+      const data = await originalJson();
+
+      if(
+        !data?.hourly?.time ||
+        !Array.isArray(data.hourly.time)
+      ){
+        return data;
+      }
+
+      const times = data.hourly.time;
+      const now = new Date();
+
+      now.setMinutes(0,0,0);
+
+      let start = 0;
+      let smallestDifference = Infinity;
+
+      for(let i=0;i<times.length;i++){
+
+        const forecastTime = new Date(times[i]);
+
+        const difference =
+          Math.abs(
+            forecastTime.getTime() -
+            now.getTime()
+          );
+
+        if(difference < smallestDifference){
+
+          smallestDifference = difference;
+          start = i;
+
+        }
+      }
+
+      const end =
+        Math.min(
+          start + 24,
+          times.length
+        );
+
+      Object.keys(data.hourly).forEach(key=>{
+
+        if(Array.isArray(data.hourly[key])){
+
+          data.hourly[key] =
+            data.hourly[key].slice(
+              start,
+              end
+            );
+
+        }
+
+      });
+
+      return data;
+    };
+
+    return response;
+  };
+
+})();
