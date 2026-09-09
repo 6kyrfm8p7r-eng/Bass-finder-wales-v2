@@ -3914,6 +3914,197 @@ if("serviceWorker" in navigator){
 }
 
 loadApp();
+  /* =========================================================
+   MARK-SPECIFIC FISHING DNA
+   ========================================================= */
+
+(function applyMarkFishingDNA(){
+
+  if(
+    typeof analyseMark !== "function" ||
+    typeof getMarkProfile !== "function"
+  ){
+    console.warn("Fishing DNA unavailable");
+    return;
+  }
+
+  const originalAnalyseMark = analyseMark;
+
+  analyseMark = function(mark, weather, marine){
+
+    const result =
+      originalAnalyseMark(mark, weather, marine);
+
+    const profile =
+      getMarkProfile(mark);
+
+    const times =
+      result.times ||
+      weather?.hourly?.time ||
+      [];
+
+    const seaLevel =
+      marine?.hourly?.sea_level_height_msl ||
+      [];
+
+    if(
+      !times.length ||
+      !seaLevel.length
+    ){
+      return result;
+    }
+
+    const now = new Date();
+
+    const horizon =
+      new Date(
+        now.getTime() +
+        24 * 60 * 60 * 1000
+      );
+
+    const events = [];
+
+    for(
+      let i = 1;
+      i < Math.min(
+        times.length - 1,
+        seaLevel.length - 1
+      );
+      i++
+    ){
+
+      const prev =
+        Number(seaLevel[i - 1]);
+
+      const current =
+        Number(seaLevel[i]);
+
+      const next =
+        Number(seaLevel[i + 1]);
+
+      if(
+        !Number.isFinite(prev) ||
+        !Number.isFinite(current) ||
+        !Number.isFinite(next)
+      ){
+        continue;
+      }
+
+      if(
+        current >= prev &&
+        current >= next
+      ){
+        events.push({
+          type:"high",
+          index:i,
+          time:new Date(times[i])
+        });
+      }
+
+      if(
+        current <= prev &&
+        current <= next
+      ){
+        events.push({
+          type:"low",
+          index:i,
+          time:new Date(times[i])
+        });
+      }
+
+    }
+
+    const relevantEvent =
+      events.find(event =>
+        event.type === profile.tideReference &&
+        event.time >= now &&
+        event.time <= horizon
+      );
+
+    if(!relevantEvent){
+      return result;
+    }
+
+    const startTime =
+      relevantEvent.time.getTime() -
+      profile.primeBeforeHours *
+      60 *
+      60 *
+      1000;
+
+    const endTime =
+      relevantEvent.time.getTime() +
+      profile.primeAfterHours *
+      60 *
+      60 *
+      1000;
+
+    let startIndex =
+      times.findIndex(t =>
+        new Date(t).getTime() >= startTime
+      );
+
+    let endIndex = -1;
+
+    for(
+      let i = times.length - 1;
+      i >= 0;
+      i--
+    ){
+
+      if(
+        new Date(times[i]).getTime() <= endTime
+      ){
+        endIndex = i;
+        break;
+      }
+
+    }
+
+    if(
+      startIndex < 0 ||
+      endIndex < startIndex
+    ){
+      return result;
+    }
+
+    /*
+       Never recommend a time that has
+       already passed.
+    */
+
+    while(
+      startIndex < times.length &&
+      new Date(times[startIndex]) < now
+    ){
+      startIndex++;
+    }
+
+    if(startIndex > endIndex){
+      return result;
+    }
+
+    /*
+       Replace the generic forecast window
+       with the mark-specific Fishing DNA window.
+    */
+
+    result.windowStart =
+      startIndex;
+
+    result.windowEnd =
+      endIndex;
+
+    /*
+       Safety remains controlled by the
+       original scoring system.
+    */
+
+    return result;
+
+  };
+
+})();
 </script>
 
 </body>
