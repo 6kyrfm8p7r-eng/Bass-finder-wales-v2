@@ -4405,18 +4405,16 @@ for(let i = 0; i < times.length; i++){
 
       for(
         let i = bestIndex + 1;
-        i < result.points.length;
+        i <= endIndex;
         i++
       ){
 
         if(
-          result.points[i].status ===
-          "DANGEROUS — DON'T FISH THIS MARK" ||
-          result.points[i].risk -
-          result.points[bestIndex].risk >= 18 ||
-          result.points[i].fishing -
-          result.points[bestIndex].fishing <= -18
-        ){
+  result.points[i].status ===
+  "DANGEROUS — DON'T FISH THIS MARK" ||
+  result.points[i].risk -
+  result.points[bestIndex].risk >= 18
+){
 
           departure =
             Math.max(
