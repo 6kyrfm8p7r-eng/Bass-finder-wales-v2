@@ -3943,7 +3943,6 @@ if("serviceWorker" in navigator){
   /* =========================================================
    MARK-SPECIFIC FISHING DNA
    ========================================================= */
-
 (function applyMarkFishingDNA(){
 
   if(
@@ -3965,21 +3964,20 @@ if("serviceWorker" in navigator){
       getMarkProfile(mark);
 
     const tideTimes =
-  marine?.minutely_15?.time ||
-  [];
+      marine?.minutely_15?.time || [];
 
-const tideLevels =
-  marine?.minutely_15?.sea_level_height_msl ||
-  [];
+    const tideLevels =
+      marine?.minutely_15?.sea_level_height_msl || [];
 
-const times =
-  result.times ||
-  weather?.hourly?.time ||
-  [];
+    const times =
+      result.times ||
+      weather?.hourly?.time ||
+      [];
 
     if(
       !times.length ||
-      !seaLevel.length
+      !tideTimes.length ||
+      !tideLevels.length
     ){
       return result;
     }
@@ -3992,63 +3990,68 @@ const times =
         24 * 60 * 60 * 1000
       );
 
-   const events = [];
+    const events = [];
 
-for(
-  let i = 1;
-  i < Math.min(
-    tideTimes.length - 1,
-    tideLevels.length - 1
-  );
-  i++
-){
+    /*
+      Find high and low water from the
+      15-minute sea-level series.
+    */
 
-  const prev =
-    Number(tideLevels[i - 1]);
+    for(
+      let i = 1;
+      i < Math.min(
+        tideTimes.length - 1,
+        tideLevels.length - 1
+      );
+      i++
+    ){
 
-  const current =
-    Number(tideLevels[i]);
+      const prev =
+        Number(tideLevels[i - 1]);
 
-  const next =
-    Number(tideLevels[i + 1]);
+      const current =
+        Number(tideLevels[i]);
 
-  if(
-    !Number.isFinite(prev) ||
-    !Number.isFinite(current) ||
-    !Number.isFinite(next)
-  ){
-    continue;
-  }
+      const next =
+        Number(tideLevels[i + 1]);
 
-  /*
-     15-minute tide data gives us a much
-     better estimate of the actual turning
-     point than the old hourly data.
-  */
+      if(
+        !Number.isFinite(prev) ||
+        !Number.isFinite(current) ||
+        !Number.isFinite(next)
+      ){
+        continue;
+      }
 
-  if(
-    current >= prev &&
-    current >= next
-  ){
-    events.push({
-      type:"high",
-      time:new Date(tideTimes[i])
-    });
-  }
+      if(
+        current >= prev &&
+        current >= next
+      ){
 
-  if(
-    current <= prev &&
-    current <= next
-  ){
-    events.push({
-      type:"low",
-      time:new Date(tideTimes[i])
-    });
-  }
+        events.push({
+          type:"high",
+          time:new Date(tideTimes[i])
+        });
 
-}
+      }
+
+      if(
+        current <= prev &&
+        current <= next
+      ){
+
+        events.push({
+          type:"low",
+          time:new Date(tideTimes[i])
+        });
+
+      }
 
     }
+
+    /*
+      Find the next relevant tide for this mark.
+    */
 
     const relevantEvent =
       events.find(event =>
@@ -4058,8 +4061,19 @@ for(
       );
 
     if(!relevantEvent){
+
+      console.warn(
+        "Fishing DNA: no relevant tide found for",
+        mark.name
+      );
+
       return result;
+
     }
+
+    /*
+      Build the mark-specific prime window.
+    */
 
     const startTime =
       relevantEvent.time.getTime() -
@@ -4091,9 +4105,25 @@ for(
       if(
         new Date(times[i]).getTime() <= endTime
       ){
+
         endIndex = i;
         break;
+
       }
+
+    }
+
+    /*
+      Never recommend a time that has already passed.
+    */
+
+    while(
+      startIndex >= 0 &&
+      startIndex < times.length &&
+      new Date(times[startIndex]) < now
+    ){
+
+      startIndex++;
 
     }
 
@@ -4101,28 +4131,25 @@ for(
       startIndex < 0 ||
       endIndex < startIndex
     ){
+
       return result;
+
     }
 
     /*
-       Never recommend a time that has
-       already passed.
+      Store the actual tide event so the UI
+      can display it.
     */
 
-    while(
-      startIndex < times.length &&
-      new Date(times[startIndex]) < now
-    ){
-      startIndex++;
-    }
+    result.tideEventType =
+      relevantEvent.type;
 
-    if(startIndex > endIndex){
-      return result;
-    }
+    result.tideEventTime =
+      relevantEvent.time.toISOString();
 
     /*
-       Replace the generic forecast window
-       with the mark-specific Fishing DNA window.
+      Replace the generic window with
+      the mark-specific Fishing DNA window.
     */
 
     result.windowStart =
@@ -4132,15 +4159,91 @@ for(
       endIndex;
 
     /*
-       Safety remains controlled by the
-       original scoring system.
+      Re-select the best fishing hour INSIDE
+      the mark-specific tide window.
+
+      Safety remains independent.
     */
+
+    const candidates =
+      result.points
+        .slice(startIndex, endIndex + 1)
+        .filter(
+          p =>
+            p.status !==
+            "DANGEROUS — DON'T FISH THIS MARK"
+        );
+
+    if(candidates.length){
+
+      let best =
+        candidates[0];
+
+      for(const p of candidates){
+
+        if(p.fishing > best.fishing){
+
+          best = p;
+
+        }
+
+      }
+
+      const bestIndex =
+        result.points.indexOf(best);
+
+      result.best =
+        best;
+
+      result.bestIndex =
+        bestIndex;
+
+      /*
+        Recalculate departure from the
+        DNA-controlled best period.
+      */
+
+      let departure =
+        endIndex;
+
+      for(
+        let i = bestIndex + 1;
+        i < result.points.length;
+        i++
+      ){
+
+        if(
+          result.points[i].status ===
+          "DANGEROUS — DON'T FISH THIS MARK" ||
+          result.points[i].risk -
+          result.points[bestIndex].risk >= 18 ||
+          result.points[i].fishing -
+          result.points[bestIndex].fishing <= -18
+        ){
+
+          departure =
+            Math.max(
+              bestIndex,
+              i - 1
+            );
+
+          break;
+
+        }
+
+      }
+
+      result.departure =
+        departure;
+
+    }
 
     return result;
 
   };
 
 })();
+  
 loadApp();
 </script>
 
