@@ -2498,20 +2498,20 @@ function renderMetrics(r){
           Preference ${r.mark.windMin}–${r.mark.windMax}°
         </div>
       </div>
-
-      <div class="metric">
+      <div class="metric clarity-highlight">
   <div class="metric-label">
-    Water clarity
+    💧 Water clarity
   </div>
   <div class="metric-value">
     ${Math.round(p.clarity)}/100
   </div>
   <div class="metric-note">
-    Estimated clarity index
+    ${p.clarity >= 75 ? "Good clarity for lure fishing" :
+      p.clarity >= 55 ? "Moderate clarity" :
+      "Poor clarity — visibility may be reduced"}
   </div>
 </div>
-
-<div class="metric">
+      <div class="metric">
   <div class="metric-label">
     Sea temperature
   </div>
