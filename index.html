@@ -3965,14 +3965,18 @@ loadApp();
     const profile =
       getMarkProfile(mark);
 
-    const times =
-      result.times ||
-      weather?.hourly?.time ||
-      [];
+    const tideTimes =
+  marine?.minutely_15?.time ||
+  [];
 
-    const seaLevel =
-      marine?.hourly?.sea_level_height_msl ||
-      [];
+const tideLevels =
+  marine?.minutely_15?.sea_level_height_msl ||
+  [];
+
+const times =
+  result.times ||
+  weather?.hourly?.time ||
+  [];
 
     if(
       !times.length ||
@@ -3989,55 +3993,61 @@ loadApp();
         24 * 60 * 60 * 1000
       );
 
-    const events = [];
+   const events = [];
 
-    for(
-      let i = 1;
-      i < Math.min(
-        times.length - 1,
-        seaLevel.length - 1
-      );
-      i++
-    ){
+for(
+  let i = 1;
+  i < Math.min(
+    tideTimes.length - 1,
+    tideLevels.length - 1
+  );
+  i++
+){
 
-      const prev =
-        Number(seaLevel[i - 1]);
+  const prev =
+    Number(tideLevels[i - 1]);
 
-      const current =
-        Number(seaLevel[i]);
+  const current =
+    Number(tideLevels[i]);
 
-      const next =
-        Number(seaLevel[i + 1]);
+  const next =
+    Number(tideLevels[i + 1]);
 
-      if(
-        !Number.isFinite(prev) ||
-        !Number.isFinite(current) ||
-        !Number.isFinite(next)
-      ){
-        continue;
-      }
+  if(
+    !Number.isFinite(prev) ||
+    !Number.isFinite(current) ||
+    !Number.isFinite(next)
+  ){
+    continue;
+  }
 
-      if(
-        current >= prev &&
-        current >= next
-      ){
-        events.push({
-          type:"high",
-          index:i,
-          time:new Date(times[i])
-        });
-      }
+  /*
+     15-minute tide data gives us a much
+     better estimate of the actual turning
+     point than the old hourly data.
+  */
 
-      if(
-        current <= prev &&
-        current <= next
-      ){
-        events.push({
-          type:"low",
-          index:i,
-          time:new Date(times[i])
-        });
-      }
+  if(
+    current >= prev &&
+    current >= next
+  ){
+    events.push({
+      type:"high",
+      time:new Date(tideTimes[i])
+    });
+  }
+
+  if(
+    current <= prev &&
+    current <= next
+  ){
+    events.push({
+      type:"low",
+      time:new Date(tideTimes[i])
+    });
+  }
+
+}
 
     }
 
