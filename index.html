@@ -4223,8 +4223,28 @@ result.dnaDebug.lows =
     );
 
 
+const dnaForecastTimes =
+  result.times ||
+  weather?.hourly?.time ||
+  [];
+
 const relevantEvent =
-  relevantEvents[0];
+  relevantEvents.find(event =>
+
+    dnaForecastTimes.some(time => {
+
+      const forecastTime =
+        new Date(time);
+
+      return (
+        forecastTime >= now &&
+        forecastTime >= event.windowStart &&
+        forecastTime <= event.windowEnd
+      );
+
+    })
+
+  );
 if(relevantEvent){
 
 result.dnaDebug.selected =
