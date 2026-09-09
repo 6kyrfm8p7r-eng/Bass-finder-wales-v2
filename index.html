@@ -2345,7 +2345,24 @@ ${r.tideEventTime ? `
     ${fmtHour(r.tideEventTime)}
   </small>
 ` : ""}
-
+${r.dnaDebug ? `
+  <small style="
+    color:#f4cf58;
+    border:1px dashed #f39b4a;
+    padding:5px;
+    margin-top:6px;
+    border-radius:7px;
+  ">
+    DNA DEBUG •
+    source ${r.dnaDebug.source} •
+    15m ${r.dnaDebug.fifteenValid}/${r.dnaDebug.fifteenTotal} •
+    hourly ${r.dnaDebug.hourlyValid}/${r.dnaDebug.hourlyTotal} •
+    highs ${r.dnaDebug.highs} •
+    lows ${r.dnaDebug.lows} •
+    wants ${r.dnaDebug.wants} •
+    selected ${r.dnaDebug.selected}
+  </small>
+` : ""}
           <small>
             Best combination of tide, sea state,
             wind and Bass Activity.
@@ -4033,7 +4050,35 @@ const tideLevels =
     : useHourlyTides
       ? hourlyTideLevels
       : [];
+result.dnaDebug = {
+  source:
+    useFifteenMinuteTides
+      ? "15m"
+      : useHourlyTides
+        ? "hourly"
+        : "none",
 
+  fifteenValid:
+    validFifteenMinuteCount,
+
+  fifteenTotal:
+    fifteenMinuteLevels.length,
+
+  hourlyValid:
+    validHourlyCount,
+
+  hourlyTotal:
+    hourlyTideLevels.length,
+
+  wants:
+    profile.tideReference,
+
+  highs:0,
+  lows:0,
+
+  selected:"none"
+};
+    
     const times =
       result.times ||
       weather?.hourly?.time ||
@@ -4145,7 +4190,15 @@ const next =
     /*
       Find the next relevant tide for this mark.
     */
+result.dnaDebug.highs =
+  events.filter(
+    event => event.type === "high"
+  ).length;
 
+result.dnaDebug.lows =
+  events.filter(
+    event => event.type === "low"
+  ).length;
     const relevantEvents =
   events
     .filter(event =>
@@ -4189,7 +4242,21 @@ const next =
 
 const relevantEvent =
   relevantEvents[0];
+if(relevantEvent){
 
+  result.dnaDebug.selected =
+    relevantEvent.type +
+    " " +
+    relevantEvent.time.toLocaleTimeString(
+      [],
+      {
+        hour:"2-digit",
+        minute:"2-digit",
+        hour12:false
+      }
+    );
+
+}
 
 if(!relevantEvent){
 
