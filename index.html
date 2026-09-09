@@ -3992,21 +3992,46 @@ const hourlyTideLevels =
   marine?.hourly?.sea_level_height_msl || [];
 
 
+const validFifteenMinuteCount =
+  fifteenMinuteLevels.filter(value =>
+    value !== null &&
+    value !== undefined &&
+    Number.isFinite(Number(value))
+  ).length;
+
+
+const validHourlyCount =
+  hourlyTideLevels.filter(value =>
+    value !== null &&
+    value !== undefined &&
+    Number.isFinite(Number(value))
+  ).length;
+
+
 const useFifteenMinuteTides =
   fifteenMinuteTimes.length >= 3 &&
-  fifteenMinuteLevels.length >= 3;
+  validFifteenMinuteCount >= 3;
+
+
+const useHourlyTides =
+  hourlyTideTimes.length >= 3 &&
+  validHourlyCount >= 3;
 
 
 const tideTimes =
   useFifteenMinuteTides
     ? fifteenMinuteTimes
-    : hourlyTideTimes;
+    : useHourlyTides
+      ? hourlyTideTimes
+      : [];
 
 
 const tideLevels =
   useFifteenMinuteTides
     ? fifteenMinuteLevels
-    : hourlyTideLevels;
+    : useHourlyTides
+      ? hourlyTideLevels
+      : [];
 
     const times =
       result.times ||
