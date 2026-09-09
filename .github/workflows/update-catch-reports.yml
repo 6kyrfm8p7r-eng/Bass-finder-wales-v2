@@ -1,0 +1,39 @@
+name: Update Bass Catch Reports
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-catch-reports:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Collect external catch reports
+        run: node scripts/catch-report-collector.js
+
+      - name: Save updated reports
+        run: |
+          git config user.name "Bass Finder Wales"
+          git config user.email "actions@github.com"
+
+          git add data/external-catch-reports.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to catch reports."
+          else
+            git commit -m "Update external bass catch reports"
+            git push
+          fi
