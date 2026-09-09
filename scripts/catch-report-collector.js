@@ -209,14 +209,21 @@ function getLocalEvidence(paragraph, markName) {
 
   const sentences = splitSentences(paragraph);
 
-  return sentences.filter(sentence =>
-    aliases.some(alias =>
+  return sentences.filter(sentence => {
+    const hasMark = aliases.some(alias =>
       new RegExp(
         `\\b${escapeRegex(alias)}\\b`,
         "i"
       ).test(sentence)
-    )
-  );
+    );
+
+    if (!hasMark) {
+      return false;
+    }
+
+    return containsBass(sentence) ||
+      containsCatchLanguage(sentence);
+  });
 }
 
 function getEvidenceType(text, markCount) {
