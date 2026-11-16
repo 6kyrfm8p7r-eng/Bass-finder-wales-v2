@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "generatedAt": "2026-10-06T18:02:35.807Z",
+  "generatedAt": "2026-11-16T14:07:33.810Z",
   "reportCount": 147,
   "confirmedCatchCount": 1,
   "activityMentionCount": 12,
@@ -100,7 +100,7 @@
       "verified": false
     },
     {
-      "id": "3dabb98c",
+      "id": "d5ca3266",
       "evidenceType": "regional_report",
       "scoringEligible": false,
       "markId": null,
@@ -117,13 +117,13 @@
       "notes": "Along the coast, after a slow early summer late season bass fishing remains strong, especially for anglers fishing afloat offshore and should go well into autumn.",
       "source": "Fishing in Wales",
       "sourceUrl": "https://fishingwales.net/sea-fishing-catch-reports/",
-      "sourceSection": "After the summer doldrums, early autumn weather fronts have whipped up the Welsh coasts, which should provide extra impetus for sea species to feed.",
-      "submittedAt": "2026-10-06T18:02:35.767Z",
+      "sourceSection": "Events, Reports &#038; Competitions",
+      "submittedAt": "2026-11-16T14:07:33.783Z",
       "conditions": null,
       "verified": false
     },
     {
-      "id": "5d66c131",
+      "id": "512b0c27",
       "evidenceType": "regional_report",
       "scoringEligible": false,
       "markId": null,
@@ -140,8 +140,8 @@
       "notes": "It is anticipated when the current winds and swell die off, shore lure fishing will kick into higher gear for this species. 2025 seems to be running later than it did last year from a bass point of view, so the best may be yet to come.",
       "source": "Fishing in Wales",
       "sourceUrl": "https://fishingwales.net/sea-fishing-catch-reports/",
-      "sourceSection": "After the summer doldrums, early autumn weather fronts have whipped up the Welsh coasts, which should provide extra impetus for sea species to feed.",
-      "submittedAt": "2026-10-06T18:02:35.768Z",
+      "sourceSection": "Events, Reports &#038; Competitions",
+      "submittedAt": "2026-11-16T14:07:33.784Z",
       "conditions": null,
       "verified": false
     },
